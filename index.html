@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jay's Hub</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    .header { padding: 24px 0 16px; border-bottom: 1px solid #1a1a2e; margin-bottom: 24px; }
+    .greeting { font-size: 26px; font-weight: 600; color: #fff; }
+    .date { font-size: 14px; color: #888; margin-top: 4px; }
+    .sync-info { font-size: 12px; color: #555; margin-top: 8px; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+    .metric-card { background: #111122; border: 1px solid #1a1a2e; border-radius: 12px; padding: 16px; text-align: center; }
+    .metric-value { font-size: 28px; font-weight: 700; color: #7c8aff; }
+    .metric-label { font-size: 11px; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .section { margin-bottom: 28px; }
+    .section-title { font-size: 16px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    .email-row { background: #111122; border: 1px solid #1a1a2e; border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; }
+    .email-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .email-sender { font-size: 13px; font-weight: 600; color: #ccc; display: flex; align-items: center; gap: 6px; }
+    .email-time { font-size: 11px; color: #666; }
+    .email-subject { font-size: 14px; color: #e0e0e0; margin-bottom: 2px; }
+    .email-snippet { font-size: 12px; color: #777; line-height: 1.4; }
+    .unread-dot { display: inline-block; width: 7px; height: 7px; background: #7c8aff; border-radius: 50%; flex-shrink: 0; }
+    .event-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #111122; border: 1px solid #1a1a2e; border-radius: 10px; margin-bottom: 8px; }
+    .event-time { font-size: 13px; color: #7c8aff; font-weight: 600; min-width: 70px; }
+    .event-title { font-size: 14px; color: #e0e0e0; flex: 1; }
+    .event-link { font-size: 12px; color: #7c8aff; text-decoration: none; padding: 4px 10px; border: 1px solid #7c8aff; border-radius: 6px; }
+    .empty-state { text-align: center; color: #555; padding: 24px; font-size: 14px; background: #111122; border-radius: 10px; border: 1px solid #1a1a2e; }
+    .loading { text-align: center; color: #555; padding: 60px 20px; font-size: 16px; }
+    .loading .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid #1a1a2e; border-top-color: #7c8aff; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 600px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } body { padding: 12px; } .greeting { font-size: 22px; } }
+  </style>
+</head>
+<body>
+  <div class="container" id="app"><div class="loading"><div class="spinner"></div><div>Loading hub...</div></div></div>
+  <script>
+    const API_URL = 'https://qlksnddlijlwgysovrky.supabase.co/functions/v1/hub-api';
+    function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function timeAgo(dateStr) { const diff = Date.now() - new Date(dateStr).getTime(); const mins = Math.floor(diff / 60000); if (mins < 60) return mins + 'm ago'; const hrs = Math.floor(mins / 60); if (hrs < 24) return hrs + 'h ago'; return Math.floor(hrs / 24) + 'd ago'; }
+    async function loadHub() { try { const res = await fetch(API_URL); const data = await res.json(); render(data); } catch (err) { document.getElementById('app').innerHTML = '<div class="empty-state">Failed to load hub data. ' + esc(err.message) + '</div>'; } }
+    function render(data) { const m = data.metrics || {}; const emails = data.emails || []; const events = data.events || []; const now = new Date(); const hour = now.getHours(); const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'; const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); const lastSync = m.last_sync && m.last_sync.timestamp ? timeAgo(m.last_sync.timestamp) : 'unknown'; let emailsHTML = ''; if (emails.length === 0) { emailsHTML = '<div class="empty-state">No emails synced yet.</div>'; } else { emailsHTML = emails.map(function(e) { const senderName = esc((e.sender || '').split('<')[0].trim() || e.sender); const dot = e.is_unread ? '<span class="unread-dot"></span>' : ''; return '<div class="email-row"><div class="email-header"><span class="email-sender">' + dot + senderName + '</span><span class="email-time">' + timeAgo(e.date) + '</span></div><div class="email-subject">' + esc(e.subject) + '</div><div class="email-snippet">' + esc((e.snippet || '').substring(0, 90)) + '</div></div>'; }).join(''); } let calHTML = ''; if (events.length === 0) { calHTML = '<div class="empty-state">No events on today\'s calendar.</div>'; } else { calHTML = events.map(function(ev) { const time = new Date(ev.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); const link = ev.meet_link ? '<a class="event-link" href="' + esc(ev.meet_link) + '">Join</a>' : ''; return '<div class="event-row"><span class="event-time">' + time + '</span><span class="event-title">' + esc(ev.title) + '</span>' + link + '</div>'; }).join(''); } document.getElementById('app').innerHTML = '<div class="header"><div class="greeting">' + greeting + ', Jay</div><div class="date">' + dateStr + '</div><div class="sync-info">Last sync: ' + lastSync + '</div></div><div class="metrics-grid"><div class="metric-card"><div class="metric-value">' + (m.gmail_unread ? m.gmail_unread.count : '\u2014') + '</div><div class="metric-label">Unread Emails</div></div><div class="metric-card"><div class="metric-value">' + (m.calendar_today ? m.calendar_today.count : 0) + '</div><div class="metric-label">Events Today</div></div><div class="metric-card"><div class="metric-value">' + (m.hubspot_companies ? m.hubspot_companies.total.toLocaleString() : '\u2014') + '</div><div class="metric-label">HubSpot Companies</div></div><div class="metric-card"><div class="metric-value">' + (m.hubspot_deals ? m.hubspot_deals.total : '\u2014') + '</div><div class="metric-label">Active Deals</div></div></div><div class="section"><div class="section-title">Today\'s Schedule</div>' + calHTML + '</div><div class="section"><div class="section-title">Recent Emails</div>' + emailsHTML + '</div>'; }
+    loadHub();
+  </script>
+</body>
+</html>
