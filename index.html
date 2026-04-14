@@ -1,56 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jay's Hub</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0a0a0f;
-      color: #e0e0e0;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .container { max-width: 720px; margin: 0 auto; }
-    .header { padding: 24px 0 16px; border-bottom: 1px solid #1a1a2e; margin-bottom: 24px; }
-    .greeting { font-size: 26px; font-weight: 600; color: #fff; }
-    .date { font-size: 14px; color: #888; margin-top: 4px; }
-    .sync-info { font-size: 12px; color: #555; margin-top: 8px; }
-    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
-    .metric-card { background: #111122; border: 1px solid #1a1a2e; border-radius: 12px; padding: 16px; text-align: center; }
-    .metric-value { font-size: 28px; font-weight: 700; color: #7c8aff; }
-    .metric-label { font-size: 11px; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .section { margin-bottom: 28px; }
-    .section-title { font-size: 16px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-    .email-row { background: #111122; border: 1px solid #1a1a2e; border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; }
-    .email-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-    .email-sender { font-size: 13px; font-weight: 600; color: #ccc; display: flex; align-items: center; gap: 6px; }
-    .email-time { font-size: 11px; color: #666; }
-    .email-subject { font-size: 14px; color: #e0e0e0; margin-bottom: 2px; }
-    .email-snippet { font-size: 12px; color: #777; line-height: 1.4; }
-    .unread-dot { display: inline-block; width: 7px; height: 7px; background: #7c8aff; border-radius: 50%; flex-shrink: 0; }
-    .event-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #111122; border: 1px solid #1a1a2e; border-radius: 10px; margin-bottom: 8px; }
-    .event-time { font-size: 13px; color: #7c8aff; font-weight: 600; min-width: 70px; }
-    .event-title { font-size: 14px; color: #e0e0e0; flex: 1; }
-    .event-link { font-size: 12px; color: #7c8aff; text-decoration: none; padding: 4px 10px; border: 1px solid #7c8aff; border-radius: 6px; }
-    .empty-state { text-align: center; color: #555; padding: 24px; font-size: 14px; background: #111122; border-radius: 10px; border: 1px solid #1a1a2e; }
-    .loading { text-align: center; color: #555; padding: 60px 20px; font-size: 16px; }
-    .loading .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid #1a1a2e; border-top-color: #7c8aff; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (max-width: 600px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } body { padding: 12px; } .greeting { font-size: 22px; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Jay's Hub</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh}
+
+/* PIN SCREEN */
+#lock{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px}
+#lock h1{font-size:28px;color:#fff}
+#lock p{color:#666;font-size:13px}
+#pin-input{background:#111122;border:2px solid #1a1a2e;border-radius:12px;padding:14px 20px;color:#fff;font-size:24px;text-align:center;width:160px;letter-spacing:8px;outline:none}
+#pin-input:focus{border-color:#7c8aff}
+#pin-error{color:#ff4444;font-size:13px;min-height:20px}
+
+/* HUB */
+#hub{display:none;padding:16px;padding-bottom:env(safe-area-inset-bottom,16px)}
+.container{max-width:720px;margin:0 auto}
+.header{padding:20px 0 12px;border-bottom:1px solid #1a1a2e;margin-bottom:20px}
+.greeting{font-size:24px;font-weight:600;color:#fff}
+.date{font-size:13px;color:#888;margin-top:3px}
+.sync-info{font-size:11px;color:#555;margin-top:6px}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.metric-card{background:#111122;border:1px solid #1a1a2e;border-radius:12px;padding:14px 8px;text-align:center}
+.metric-value{font-size:22px;font-weight:700;color:#7c8aff}
+.metric-label{font-size:10px;color:#888;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+.section{margin-bottom:24px}
+.section-title{font-size:14px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.task-row{display:flex;align-items:flex-start;gap:10px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:12px;margin-bottom:6px}
+.task-check{background:none;border:2px solid #333;color:#555;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.task-check:hover{border-color:#7c8aff;color:#7c8aff}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:14px;color:#e0e0e0;line-height:1.3}
+.task-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 6px;border:1px solid #333;border-radius:4px;color:#888}
+.add-row{display:flex;gap:6px;margin-top:8px}
+.add-input{flex:1;background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:10px 12px;color:#e0e0e0;font-size:14px;outline:none}
+.add-input:focus{border-color:#7c8aff}
+.add-select{background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:8px 4px;color:#888;font-size:11px;outline:none;max-width:80px}
+.add-btn{background:#7c8aff;border:none;color:#fff;width:40px;border-radius:8px;font-size:20px;cursor:pointer;font-weight:bold}
+.add-btn:active{background:#5a6ad4}
+.proto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.proto-card{background:#111122;border:1px solid #1a1a2e;border-radius:12px;padding:12px 6px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s;position:relative}
+.proto-card:active{transform:scale(.95)}
+.proto-card.done{background:#0d1f0d;border-color:#1a3a1a}
+.proto-icon{font-size:24px}
+.proto-check{position:absolute;top:4px;right:6px;color:#2ecc71;font-size:9px;font-weight:bold}
+.proto-name{font-size:10px;color:#aaa;line-height:1.2}
+.proto-xp{font-size:9px;color:#555}
+.proto-card.done .proto-name{color:#2ecc71}
+.proto-card.done .proto-xp{color:#1a5a1a}
+.email-row{background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:12px 14px;margin-bottom:6px}
+.email-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.email-sender{font-size:12px;font-weight:600;color:#ccc;display:flex;align-items:center;gap:6px}
+.email-time{font-size:10px;color:#666}
+.email-subject{font-size:13px;color:#e0e0e0;margin-bottom:2px}
+.email-snippet{font-size:11px;color:#777;line-height:1.3}
+.unread-dot{display:inline-block;width:6px;height:6px;background:#7c8aff;border-radius:50%;flex-shrink:0}
+.event-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;margin-bottom:6px}
+.event-time{font-size:12px;color:#7c8aff;font-weight:600;min-width:65px}
+.event-title{font-size:13px;color:#e0e0e0;flex:1}
+.event-link{font-size:11px;color:#7c8aff;text-decoration:none;padding:3px 8px;border:1px solid #7c8aff;border-radius:6px}
+.link-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.link-card{display:flex;flex-direction:column;align-items:center;gap:4px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:12px 4px;text-decoration:none;transition:all .15s}
+.link-card:active{transform:scale(.95)}
+.link-card span{font-size:10px;color:#7c8aff;text-transform:uppercase;letter-spacing:.3px;font-weight:600}
+.empty-state{text-align:center;color:#555;padding:20px;font-size:13px;background:#111122;border-radius:10px;border:1px solid #1a1a2e}
+.footer{text-align:center;padding:16px 0;font-size:10px;color:#333}
+.loading{text-align:center;color:#555;padding:40px;font-size:14px}
+@media(max-width:600px){#hub{padding:12px}.greeting{font-size:20px}}
+@media(max-width:380px){.metrics-grid{grid-template-columns:repeat(2,1fr)}.proto-grid{grid-template-columns:repeat(2,1fr)}.link-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
 </head>
 <body>
-  <div class="container" id="app"><div class="loading"><div class="spinner"></div><div>Loading hub...</div></div></div>
-  <script>
-    const API_URL = 'https://qlksnddlijlwgysovrky.supabase.co/functions/v1/hub-api';
-    function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-    function timeAgo(dateStr) { const diff = Date.now() - new Date(dateStr).getTime(); const mins = Math.floor(diff / 60000); if (mins < 60) return mins + 'm ago'; const hrs = Math.floor(mins / 60); if (hrs < 24) return hrs + 'h ago'; return Math.floor(hrs / 24) + 'd ago'; }
-    async function loadHub() { try { const res = await fetch(API_URL); const data = await res.json(); render(data); } catch (err) { document.getElementById('app').innerHTML = '<div class="empty-state">Failed to load hub data. ' + esc(err.message) + '</div>'; } }
-    function render(data) { const m = data.metrics || {}; const emails = data.emails || []; const events = data.events || []; const now = new Date(); const hour = now.getHours(); const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'; const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); const lastSync = m.last_sync && m.last_sync.timestamp ? timeAgo(m.last_sync.timestamp) : 'unknown'; let emailsHTML = ''; if (emails.length === 0) { emailsHTML = '<div class="empty-state">No emails synced yet.</div>'; } else { emailsHTML = emails.map(function(e) { const senderName = esc((e.sender || '').split('<')[0].trim() || e.sender); const dot = e.is_unread ? '<span class="unread-dot"></span>' : ''; return '<div class="email-row"><div class="email-header"><span class="email-sender">' + dot + senderName + '</span><span class="email-time">' + timeAgo(e.date) + '</span></div><div class="email-subject">' + esc(e.subject) + '</div><div class="email-snippet">' + esc((e.snippet || '').substring(0, 90)) + '</div></div>'; }).join(''); } let calHTML = ''; if (events.length === 0) { calHTML = '<div class="empty-state">No events on today\'s calendar.</div>'; } else { calHTML = events.map(function(ev) { const time = new Date(ev.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); const link = ev.meet_link ? '<a class="event-link" href="' + esc(ev.meet_link) + '">Join</a>' : ''; return '<div class="event-row"><span class="event-time">' + time + '</span><span class="event-title">' + esc(ev.title) + '</span>' + link + '</div>'; }).join(''); } document.getElementById('app').innerHTML = '<div class="header"><div class="greeting">' + greeting + ', Jay</div><div class="date">' + dateStr + '</div><div class="sync-info">Last sync: ' + lastSync + '</div></div><div class="metrics-grid"><div class="metric-card"><div class="metric-value">' + (m.gmail_unread ? m.gmail_unread.count : '\u2014') + '</div><div class="metric-label">Unread Emails</div></div><div class="metric-card"><div class="metric-value">' + (m.calendar_today ? m.calendar_today.count : 0) + '</div><div class="metric-label">Events Today</div></div><div class="metric-card"><div class="metric-value">' + (m.hubspot_companies ? m.hubspot_companies.total.toLocaleString() : '\u2014') + '</div><div class="metric-label">HubSpot Companies</div></div><div class="metric-card"><div class="metric-value">' + (m.hubspot_deals ? m.hubspot_deals.total : '\u2014') + '</div><div class="metric-label">Active Deals</div></div></div><div class="section"><div class="section-title">Today\'s Schedule</div>' + calHTML + '</div><div class="section"><div class="section-title">Recent Emails</div>' + emailsHTML + '</div>'; }
-    loadHub();
-  </script>
+
+<!-- PIN LOCK -->
+<div id="lock">
+  <h1>Jay's Hub</h1>
+  <p>Enter PIN</p>
+  <input type="password" id="pin-input" maxlength="4" inputmode="numeric" autofocus>
+  <div id="pin-error"></div>
+</div>
+
+<!-- HUB CONTENT -->
+<div id="hub">
+  <div class="container">
+    <div class="header">
+      <div class="greeting" id="greeting"></div>
+      <div class="date" id="date-line"></div>
+      <div class="sync-info" id="sync-info"></div>
+    </div>
+    <div class="metrics-grid" id="metrics"></div>
+    <div class="section">
+      <div class="section-title">Tasks</div>
+      <div id="tasks"><div class="loading">Loading...</div></div>
+      <div class="add-row">
+        <input type="text" id="new-task" placeholder="New task..." class="add-input">
+        <select id="new-cat" class="add-select">
+          <option value="personal">personal</option>
+          <option value="mercury">mercury</option>
+          <option value="howl">howl</option>
+          <option value="harmonycares">work</option>
+          <option value="career">career</option>
+          <option value="family">family</option>
+          <option value="health">health</option>
+          <option value="tech">tech</option>
+          <option value="financial">financial</option>
+        </select>
+        <select id="new-pri" class="add-select">
+          <option value="medium">med</option>
+          <option value="high">high</option>
+          <option value="urgent">urgent</option>
+          <option value="low">low</option>
+        </select>
+        <button class="add-btn" onclick="addTask()">+</button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">HOWL Protocols <span id="proto-count" style="font-size:11px;color:#555;font-weight:400"></span></div>
+      <div class="proto-grid" id="protocols"><div class="loading">Loading...</div></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Schedule</div>
+      <div id="calendar"><div class="loading">Loading...</div></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Email</div>
+      <div id="emails"><div class="loading">Loading...</div></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Quick Links</div>
+      <div class="link-grid" id="links"></div>
+    </div>
+    <div class="footer">Hub v5</div>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://qlksnddlijlwgysovrky.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFsa3NuZGRsaWpsd2d5c292cmt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDY2NzYsImV4cCI6MjA5MDU4MjY3Nn0.8hmYCN7rtEmBKeyDlnoznLbO723xrP_b98XiotPbHkM';
+const JAY_ID = '199a9152-ada2-4da2-abcf-ecea532d8349';
+const PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'; // sha256 of "1234"
+
+const headers = {'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json'};
+
+// --- PIN ---
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+document.getElementById('pin-input').addEventListener('input', async function() {
+  if (this.value.length === 4) {
+    const hash = await sha256(this.value);
+    if (hash === PIN_HASH) {
+      document.getElementById('lock').style.display = 'none';
+      document.getElementById('hub').style.display = 'block';
+      sessionStorage.setItem('hub_auth', '1');
+      loadHub();
+    } else {
+      document.getElementById('pin-error').textContent = 'Wrong PIN';
+      this.value = '';
+    }
+  }
+});
+
+// Auto-unlock if already authed this session
+if (sessionStorage.getItem('hub_auth') === '1') {
+  document.getElementById('lock').style.display = 'none';
+  document.getElementById('hub').style.display = 'block';
+  loadHub();
+}
+
+// --- SUPABASE HELPERS ---
+async function sbGet(table, query) {
+  const r = await fetch(SB_URL + '/rest/v1/' + table + '?' + query, {headers});
+  return r.json();
+}
+async function sbPost(table, body) {
+  const h = {...headers, 'Prefer': 'return=minimal'};
+  await fetch(SB_URL + '/rest/v1/' + table, {method:'POST', headers:h, body: JSON.stringify(body)});
+}
+async function sbPatch(table, query, body) {
+  const h = {...headers, 'Prefer': 'return=minimal'};
+  await fetch(SB_URL + '/rest/v1/' + table + '?' + query, {method:'PATCH', headers:h, body: JSON.stringify(body)});
+}
+async function sbDelete(table, query) {
+  await fetch(SB_URL + '/rest/v1/' + table + '?' + query, {method:'DELETE', headers});
+}
+
+function esc(s) { if (!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function timeAgo(d) {
+  const diff = Date.now() - new Date(d).getTime();
+  const m = Math.floor(diff/60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m/60);
+  if (h < 24) return h + 'h ago';
+  return Math.floor(h/24) + 'd ago';
+}
+
+// --- STATE ---
+let allProtocols = [];
+let todayLogs = [];
+let profile = null;
+
+// --- LOAD ---
+async function loadHub() {
+  const now = new Date();
+  const hour = now.getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('greeting').textContent = greeting + ', Jay';
+  document.getElementById('date-line').textContent = now.toLocaleDateString('en-US', {weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+  // Quick links
+  const links = [
+    {l:'Gmail',u:'https://mail.google.com'},{l:'Calendar',u:'https://calendar.google.com'},
+    {l:'HubSpot',u:'https://app.hubspot.com'},{l:'Apollo',u:'https://app.apollo.io'},
+    {l:'Outlook',u:'https://outlook.office.com'},{l:'HOWL',u:'https://howl-pack.vercel.app'},
+    {l:'Quotes',u:'https://mercury-quote-generator.vercel.app'},
+    {l:'Supabase',u:'https://supabase.com/dashboard/project/qlksnddlijlwgysovrky'},
+    {l:'GitHub',u:'https://github.com/21jdkline'},{l:'Vercel',u:'https://vercel.com/dashboard'}
+  ];
+  document.getElementById('links').innerHTML = links.map(x => '<a href="'+x.u+'" class="link-card" target="_blank"><span>'+x.l+'</span></a>').join('');
+
+  // Load all data in parallel
+  const today = now.toLocaleDateString('en-CA');
+  const [metrics, emails, events, tasks, protocols, logs, profiles] = await Promise.all([
+    sbGet('hub_metrics', 'select=*'),
+    sbGet('hub_emails', 'select=*&order=date.desc&limit=10'),
+    sbGet('hub_calendar', 'select=*&order=start_time.asc&limit=10'),
+    sbGet('tasks', 'select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=20'),
+    sbGet('protocols', 'select=*&is_active=eq.true&order=sort_order.asc'),
+    sbGet('daily_logs', 'select=*,protocols(name,icon,xp_reward)&profile_id=eq.' + JAY_ID + '&log_date=eq.' + today),
+    sbGet('profiles', 'select=*&id=eq.' + JAY_ID),
+  ]);
+
+  allProtocols = protocols;
+  todayLogs = logs;
+  profile = profiles[0] || {};
+
+  const m = {};
+  (metrics||[]).forEach(r => m[r.key] = r.value);
+  const lastSync = m.last_sync?.timestamp ? timeAgo(m.last_sync.timestamp) : 'not synced yet';
+  document.getElementById('sync-info').textContent = 'Last sync: ' + lastSync;
+
+  // Metrics
+  const xp = profile.total_xp || 0;
+  const rank = profile.current_rank || 'runt';
+  document.getElementById('metrics').innerHTML =
+    mc(m.gmail_unread?.count ?? '--', 'Unread') +
+    mc(m.calendar_today?.count ?? 0, 'Events') +
+    mc(logs.length + '/' + protocols.length, 'Protocols') +
+    mc(xp.toLocaleString(), rank);
+
+  // Tasks
+  renderTasks(tasks);
+
+  // Protocols
+  renderProtocols();
+
+  // Calendar
+  if (!events || events.length === 0) {
+    document.getElementById('calendar').innerHTML = '<div class="empty-state">No events on today\'s calendar.</div>';
+  } else {
+    document.getElementById('calendar').innerHTML = events.map(ev => {
+      const t = new Date(ev.start_time).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      return '<div class="event-row"><span class="event-time">'+t+'</span><span class="event-title">'+esc(ev.title)+'</span>'+(ev.meet_link?'<a class="event-link" href="'+esc(ev.meet_link)+'" target="_blank">Join</a>':'')+'</div>';
+    }).join('');
+  }
+
+  // Emails
+  if (!emails || emails.length === 0) {
+    document.getElementById('emails').innerHTML = '<div class="empty-state">No emails synced yet.</div>';
+  } else {
+    document.getElementById('emails').innerHTML = emails.map(e => {
+      const sender = esc((e.sender||'').split('<')[0].trim());
+      const dot = e.is_unread ? '<span class="unread-dot"></span>' : '';
+      return '<div class="email-row"><div class="email-header"><span class="email-sender">'+dot+sender+'</span><span class="email-time">'+timeAgo(e.date)+'</span></div><div class="email-subject">'+esc(e.subject)+'</div><div class="email-snippet">'+esc((e.snippet||'').substring(0,90))+'</div></div>';
+    }).join('');
+  }
+}
+
+function mc(val, label) {
+  return '<div class="metric-card"><div class="metric-value">'+val+'</div><div class="metric-label">'+label+'</div></div>';
+}
+
+// --- TASKS ---
+const priOrder = {urgent:0,high:1,medium:2,low:3};
+const priColor = {urgent:'#ff4444',high:'#ff8c00',medium:'#7c8aff',low:'#555'};
+const catColor = {mercury:'#00d4aa',howl:'#e63946',harmonycares:'#4ecdc4',career:'#ffd166',personal:'#7c8aff',family:'#ff69b4',health:'#2ecc71',tech:'#9b59b6',financial:'#f39c12',education:'#3498db',codex:'#e74c3c'};
+
+function renderTasks(tasks) {
+  if (!tasks || tasks.length === 0) {
+    document.getElementById('tasks').innerHTML = '<div class="empty-state">No tasks yet. Add one below.</div>';
+    return;
+  }
+  tasks.sort((a,b) => (priOrder[a.priority]??2) - (priOrder[b.priority]??2));
+  document.getElementById('tasks').innerHTML = tasks.map(t => {
+    const pc = priColor[t.priority]||'#7c8aff';
+    const cc = catColor[t.category]||'#7c8aff';
+    return '<div class="task-row"><button class="task-check" onclick="completeTask(\''+t.id+'\')">o</button><div class="task-body"><div class="task-title">'+esc(t.title)+'</div><div class="task-meta"><span class="tag" style="border-color:'+cc+'">'+t.category+'</span><span class="tag" style="border-color:'+pc+';color:'+pc+'">'+t.priority+'</span></div></div></div>';
+  }).join('');
+}
+
+async function completeTask(id) {
+  await sbPatch('tasks', 'id=eq.'+id, {status:'completed', completed_at: new Date().toISOString(), updated_at: new Date().toISOString()});
+  const tasks = await sbGet('tasks', 'select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=20');
+  renderTasks(tasks);
+}
+
+async function addTask() {
+  const input = document.getElementById('new-task');
+  const title = input.value.trim();
+  if (!title) return;
+  const category = document.getElementById('new-cat').value;
+  const priority = document.getElementById('new-pri').value;
+  await sbPost('tasks', {title, category, priority, status:'pending'});
+  input.value = '';
+  const tasks = await sbGet('tasks', 'select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=20');
+  renderTasks(tasks);
+}
+
+document.getElementById('new-task').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') addTask();
+});
+
+// --- PROTOCOLS ---
+function renderProtocols() {
+  const loggedIds = new Set(todayLogs.map(l => l.protocol_id));
+  document.getElementById('proto-count').textContent = todayLogs.length + ' of ' + allProtocols.length + ' today';
+  document.getElementById('protocols').innerHTML = allProtocols.map(p => {
+    const done = loggedIds.has(p.id);
+    const log = todayLogs.find(l => l.protocol_id === p.id);
+    if (done && log) {
+      return '<div class="proto-card done" onclick="undoProtocol(\''+log.id+'\',\''+p.id+'\','+p.xp_reward+')"><span class="proto-icon">'+p.icon+'</span><span class="proto-check">DONE</span><span class="proto-name">'+esc(p.name)+'</span><span class="proto-xp">+'+p.xp_reward+' XP</span></div>';
+    }
+    return '<div class="proto-card" onclick="logProtocol(\''+p.id+'\','+p.xp_reward+')"><span class="proto-icon">'+p.icon+'</span><span class="proto-name">'+esc(p.name)+'</span><span class="proto-xp">+'+p.xp_reward+' XP</span></div>';
+  }).join('');
+}
+
+async function logProtocol(protocolId, xp) {
+  const today = new Date().toLocaleDateString('en-CA');
+  await sbPost('daily_logs', {profile_id: JAY_ID, protocol_id: protocolId, log_date: today, xp_earned: xp});
+  // Update XP
+  const newXp = (profile.total_xp||0) + xp;
+  let newRank = profile.current_rank;
+  if (newXp >= 5000) newRank = 'alpha';
+  else if (newXp >= 2500) newRank = 'warrior';
+  else if (newXp >= 1000) newRank = 'hunter';
+  else if (newXp >= 400) newRank = 'scout';
+  else if (newXp >= 100) newRank = 'pup';
+  await sbPatch('profiles', 'id=eq.'+JAY_ID, {total_xp: newXp, current_rank: newRank, updated_at: new Date().toISOString()});
+  profile.total_xp = newXp;
+  profile.current_rank = newRank;
+  // Refresh logs
+  const today2 = new Date().toLocaleDateString('en-CA');
+  todayLogs = await sbGet('daily_logs', 'select=*,protocols(name,icon,xp_reward)&profile_id=eq.'+JAY_ID+'&log_date=eq.'+today2);
+  renderProtocols();
+  // Update metrics display
+  const metricsEl = document.getElementById('metrics');
+  const cards = metricsEl.querySelectorAll('.metric-card');
+  if (cards[2]) cards[2].querySelector('.metric-value').textContent = todayLogs.length+'/'+allProtocols.length;
+  if (cards[3]) { cards[3].querySelector('.metric-value').textContent = newXp.toLocaleString(); cards[3].querySelector('.metric-label').textContent = newRank; }
+}
+
+async function undoProtocol(logId, protocolId, xp) {
+  await sbDelete('daily_logs', 'id=eq.'+logId);
+  const newXp = Math.max(0, (profile.total_xp||0) - xp);
+  await sbPatch('profiles', 'id=eq.'+JAY_ID, {total_xp: newXp, updated_at: new Date().toISOString()});
+  profile.total_xp = newXp;
+  const today = new Date().toLocaleDateString('en-CA');
+  todayLogs = await sbGet('daily_logs', 'select=*,protocols(name,icon,xp_reward)&profile_id=eq.'+JAY_ID+'&log_date=eq.'+today);
+  renderProtocols();
+  const metricsEl = document.getElementById('metrics');
+  const cards = metricsEl.querySelectorAll('.metric-card');
+  if (cards[2]) cards[2].querySelector('.metric-value').textContent = todayLogs.length+'/'+allProtocols.length;
+  if (cards[3]) cards[3].querySelector('.metric-value').textContent = newXp.toLocaleString();
+}
+</script>
 </body>
 </html>
