@@ -31,12 +31,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .metric-label{font-size:10px;color:#888;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
 .section{margin-bottom:24px}
 .section-title{font-size:14px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
-.task-row{display:flex;align-items:flex-start;gap:10px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:12px;margin-bottom:6px}
+.task-row{display:flex;align-items:flex-start;gap:10px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:12px;margin-bottom:6px;cursor:pointer}
 .task-check{background:none;border:2px solid #333;color:#555;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
 .task-check:hover{border-color:#7c8aff;color:#7c8aff}
 .task-body{flex:1;min-width:0}
 .task-title{font-size:14px;color:#e0e0e0;line-height:1.3}
 .task-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.task-desc{font-size:12px;color:#aaa;line-height:1.4;white-space:pre-wrap;word-wrap:break-word}
+.task-expand{margin-top:8px;padding-top:8px;border-top:1px solid #1a1a2e;display:flex;flex-direction:column;gap:8px}
+.task-edit{display:flex;align-items:center;gap:8px;font-size:12px;color:#888;flex-wrap:wrap}
+.task-edit label{color:#888}
+.task-edit input[type=date]{background:#111122;border:1px solid #1a1a2e;border-radius:6px;padding:5px 7px;color:#e0e0e0;font-size:12px;outline:none;color-scheme:dark}
+.task-edit button{background:#1a1a2e;border:1px solid #2a2a4e;color:#7c8aff;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
+.task-edit button:hover{background:#2a2a4e}
+.filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.filter-chip{font-size:11px;padding:5px 10px;border:1px solid #1a1a2e;border-radius:14px;background:#111122;color:#888;cursor:pointer;transition:all .15s}
+.filter-chip:hover{border-color:#7c8aff;color:#7c8aff}
+.filter-chip.active{background:#7c8aff;color:#0a0a1a;border-color:#7c8aff;font-weight:600}
+.add-date{background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:8px 6px;color:#888;font-size:11px;outline:none;max-width:115px;color-scheme:dark}
 .tag{font-size:10px;padding:2px 6px;border:1px solid #333;border-radius:4px;color:#888}
 .add-row{display:flex;gap:6px;margin-top:8px}
 .add-input{flex:1;background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:10px 12px;color:#e0e0e0;font-size:14px;outline:none}
@@ -97,6 +109,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="metrics-grid" id="metrics"></div>
     <div class="section">
       <div class="section-title">Tasks</div>
+      <div class="filter-row" id="task-filters">
+        <span class="filter-chip active" data-filter="all" onclick="setFilter('all')">All</span>
+        <span class="filter-chip" data-filter="today" onclick="setFilter('today')">Today</span>
+        <span class="filter-chip" data-filter="week" onclick="setFilter('week')">This Week</span>
+        <span class="filter-chip" data-filter="deleted" onclick="setFilter('deleted')">Deleted</span>
+      </div>
       <div id="tasks"><div class="loading">Loading...</div></div>
       <div class="add-row">
         <input type="text" id="new-task" placeholder="New task..." class="add-input">
@@ -117,6 +135,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           <option value="urgent">urgent</option>
           <option value="low">low</option>
         </select>
+        <input type="date" id="new-due" class="add-date" title="Due date (optional)">
         <button class="add-btn" onclick="addTask()">+</button>
       </div>
     </div>
@@ -295,6 +314,28 @@ const priOrder = {urgent:0,high:1,medium:2,low:3};
 const priColor = {urgent:'#ff4444',high:'#ff8c00',medium:'#7c8aff',low:'#555'};
 const catColor = {mercury:'#00d4aa',howl:'#e63946',harmonycares:'#4ecdc4',career:'#ffd166',personal:'#7c8aff',family:'#ff69b4',health:'#2ecc71',tech:'#9b59b6',financial:'#f39c12',education:'#3498db',codex:'#e74c3c'};
 
+let currentFilter = 'all';
+
+function tasksQuery() {
+  const today = new Date().toISOString().slice(0,10);
+  const weekEnd = new Date(Date.now() + 7*24*60*60*1000).toISOString().slice(0,10);
+  if (currentFilter === 'today')   return 'select=*&status=in.(pending,in_progress)&due_date=eq.'+today+'&order=priority.asc,created_at.desc&limit=50';
+  if (currentFilter === 'week')    return 'select=*&status=in.(pending,in_progress)&due_date=gte.'+today+'&due_date=lte.'+weekEnd+'&order=due_date.asc&limit=50';
+  if (currentFilter === 'deleted') return 'select=*&status=eq.completed&order=completed_at.desc&limit=50';
+  return 'select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=50';
+}
+
+async function loadTasks() {
+  const tasks = await sbGet('tasks', tasksQuery());
+  renderTasks(tasks);
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.dataset.filter === f));
+  loadTasks();
+}
+
 function renderTasks(tasks) {
   if (!tasks || tasks.length === 0) {
     document.getElementById('tasks').innerHTML = '<div class="empty-state">No tasks yet. Add one below.</div>';
@@ -304,14 +345,36 @@ function renderTasks(tasks) {
   document.getElementById('tasks').innerHTML = tasks.map(t => {
     const pc = priColor[t.priority]||'#7c8aff';
     const cc = catColor[t.category]||'#7c8aff';
-    return '<div class="task-row"><button class="task-check" onclick="completeTask(\''+t.id+'\')">o</button><div class="task-body"><div class="task-title">'+esc(t.title)+'</div><div class="task-meta"><span class="tag" style="border-color:'+cc+'">'+t.category+'</span><span class="tag" style="border-color:'+pc+';color:'+pc+'">'+t.priority+'</span></div></div></div>';
+    const due = t.due_date ? '<span class="tag" style="border-color:#ffd166;color:#ffd166">due '+t.due_date+'</span>' : '';
+    const descBlock = t.description ? '<div class="task-desc">'+esc(t.description)+'</div>' : '';
+    const editBlock = '<div class="task-edit" onclick="event.stopPropagation()">'
+      + '<label>Due:</label>'
+      + '<input type="date" value="'+(t.due_date||'')+'" onchange="updateDue(\''+t.id+'\',this.value)">'
+      + (t.due_date ? '<button onclick="updateDue(\''+t.id+'\',\'\')">clear</button>' : '')
+      + '</div>';
+    const expand = '<div class="task-expand" id="exp-'+t.id+'" style="display:none">'+descBlock+editBlock+'</div>';
+    return '<div class="task-row" onclick="toggleTask(\''+t.id+'\')"><button class="task-check" onclick="event.stopPropagation();completeTask(\''+t.id+'\')">o</button><div class="task-body"><div class="task-title">'+esc(t.title)+'</div><div class="task-meta"><span class="tag" style="border-color:'+cc+'">'+t.category+'</span><span class="tag" style="border-color:'+pc+';color:'+pc+'">'+t.priority+'</span>'+due+'</div>'+expand+'</div></div>';
   }).join('');
 }
 
+function toggleTask(id) {
+  const d = document.getElementById('exp-'+id);
+  if (d) d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+
+async function updateDue(id, val) {
+  await sbPatch('tasks', 'id=eq.'+id, {due_date: val || null, updated_at: new Date().toISOString()});
+  loadTasks();
+}
+
 async function completeTask(id) {
-  await sbPatch('tasks', 'id=eq.'+id, {status:'completed', completed_at: new Date().toISOString(), updated_at: new Date().toISOString()});
-  const tasks = await sbGet('tasks', 'select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=20');
-  renderTasks(tasks);
+  // In Deleted view, the circle restores (un-completes). Elsewhere it completes.
+  if (currentFilter === 'deleted') {
+    await sbPatch('tasks', 'id=eq.'+id, {status:'pending', completed_at: null, updated_at: new Date().toISOString()});
+  } else {
+    await sbPatch('tasks', 'id=eq.'+id, {status:'completed', completed_at: new Date().toISOString(), updated_at: new Date().toISOString()});
+  }
+  loadTasks();
 }
 
 async function addTask() {
@@ -320,10 +383,13 @@ async function addTask() {
   if (!title) return;
   const category = document.getElementById('new-cat').value;
   const priority = document.getElementById('new-pri').value;
-  await sbPost('tasks', {title, category, priority, status:'pending'});
+  const dueRaw = document.getElementById('new-due').value;
+  const payload = {title, category, priority, status:'pending'};
+  if (dueRaw) payload.due_date = dueRaw;
+  await sbPost('tasks', payload);
   input.value = '';
-  const tasks = await sbGet('tasks', 'select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=20');
-  renderTasks(tasks);
+  document.getElementById('new-due').value = '';
+  loadTasks();
 }
 
 document.getElementById('new-task').addEventListener('keydown', function(e) {
