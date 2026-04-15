@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh}
 
-/* PIN SCREEN */
+/* ─── PIN ─────────────────────────────────────────────────── */
 #lock{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px}
 #lock h1{font-size:28px;color:#fff}
 #lock p{color:#666;font-size:13px}
@@ -18,79 +18,150 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 #pin-input:focus{border-color:#7c8aff}
 #pin-error{color:#ff4444;font-size:13px;min-height:20px}
 
-/* HUB */
+/* ─── HUB SHELL ───────────────────────────────────────────── */
 #hub{display:none;padding:16px;padding-bottom:env(safe-area-inset-bottom,16px)}
 .container{max-width:720px;margin:0 auto}
-.header{padding:20px 0 12px;border-bottom:1px solid #1a1a2e;margin-bottom:20px}
+
+/* ─── HEADER ──────────────────────────────────────────────── */
+.hub-header{padding:20px 0 14px}
 .greeting{font-size:24px;font-weight:600;color:#fff}
-.date{font-size:13px;color:#888;margin-top:3px}
-.sync-info{font-size:11px;color:#555;margin-top:6px}
-.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
-.metric-card{background:#111122;border:1px solid #1a1a2e;border-radius:12px;padding:14px 8px;text-align:center}
-.metric-value{font-size:22px;font-weight:700;color:#7c8aff}
-.metric-label{font-size:10px;color:#888;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
-.section{margin-bottom:24px}
-.section-title{font-size:14px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
-.task-row{display:flex;align-items:flex-start;gap:10px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:12px;margin-bottom:6px;cursor:pointer}
-.task-check{background:none;border:2px solid #333;color:#555;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.date-line{font-size:13px;color:#888;margin-top:3px}
+.metrics-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.metric-card{background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:11px 6px;text-align:center}
+.metric-value{font-size:20px;font-weight:700;color:#7c8aff}
+.metric-label{font-size:10px;color:#888;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ─── ACCORDION ───────────────────────────────────────────── */
+.accordion{margin-bottom:8px;border:1px solid #1a1a2e;border-radius:12px;overflow:hidden;background:#111122}
+.acc-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .12s}
+.acc-header:active{background:#16162a}
+.acc-left{display:flex;align-items:center;gap:9px;min-width:0}
+.acc-icon{font-size:15px;flex-shrink:0}
+.acc-title{font-size:12px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.8px}
+.acc-badge{font-size:10px;color:#555;padding:2px 6px;background:#0d0d1a;border:1px solid #222238;border-radius:8px;white-space:nowrap;flex-shrink:0}
+.acc-chevron{color:#444;font-size:11px;flex-shrink:0;transition:transform .2s}
+.accordion.open>.acc-header .acc-chevron{transform:rotate(180deg)}
+.acc-body{display:none;padding:12px 16px 16px;background:#0d0d1a;border-top:1px solid #1a1a2e}
+.accordion.open>.acc-body{display:block}
+.sub-label{font-size:10px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.8px;margin:12px 0 8px}
+.sub-label:first-child{margin-top:0}
+
+/* ─── TASKS ───────────────────────────────────────────────── */
+.filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.filter-chip{font-size:11px;padding:5px 10px;border:1px solid #1a1a2e;border-radius:14px;background:#111122;color:#888;cursor:pointer;transition:all .15s}
+.filter-chip.active{background:#7c8aff;color:#0a0a1a;border-color:#7c8aff;font-weight:600}
+.task-row{display:flex;align-items:flex-start;gap:10px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:12px;margin-bottom:6px;cursor:pointer;transition:border-color .12s}
+.task-row:active{border-color:#333}
+.task-check{background:none;border:2px solid #333;color:#555;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
 .task-check:hover{border-color:#7c8aff;color:#7c8aff}
 .task-body{flex:1;min-width:0}
 .task-title{font-size:14px;color:#e0e0e0;line-height:1.3}
-.task-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
-.task-desc{font-size:12px;color:#aaa;line-height:1.4;white-space:pre-wrap;word-wrap:break-word}
-.task-expand{margin-top:8px;padding-top:8px;border-top:1px solid #1a1a2e;display:flex;flex-direction:column;gap:8px}
-.task-edit{display:flex;align-items:center;gap:8px;font-size:12px;color:#888;flex-wrap:wrap}
-.task-edit label{color:#888}
-.task-edit input[type=date]{background:#111122;border:1px solid #1a1a2e;border-radius:6px;padding:5px 7px;color:#e0e0e0;font-size:12px;outline:none;color-scheme:dark}
-.task-edit button{background:#1a1a2e;border:1px solid #2a2a4e;color:#7c8aff;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
-.task-edit button:hover{background:#2a2a4e}
-.filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
-.filter-chip{font-size:11px;padding:5px 10px;border:1px solid #1a1a2e;border-radius:14px;background:#111122;color:#888;cursor:pointer;transition:all .15s}
-.filter-chip:hover{border-color:#7c8aff;color:#7c8aff}
-.filter-chip.active{background:#7c8aff;color:#0a0a1a;border-color:#7c8aff;font-weight:600}
-.add-date{background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:8px 6px;color:#888;font-size:11px;outline:none;max-width:115px;color-scheme:dark}
+.task-meta{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
 .tag{font-size:10px;padding:2px 6px;border:1px solid #333;border-radius:4px;color:#888}
-.add-row{display:flex;gap:6px;margin-top:8px}
-.add-input{flex:1;background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:10px 12px;color:#e0e0e0;font-size:14px;outline:none}
+.task-expand{margin-top:8px;padding-top:8px;border-top:1px solid #1a1a2e;display:flex;flex-direction:column;gap:8px}
+.task-edit{display:flex;align-items:flex-start;gap:7px;font-size:12px;flex-wrap:wrap}
+.task-edit label{color:#666;flex-shrink:0;padding-top:6px}
+.task-edit input[type=date]{background:#111122;border:1px solid #1a1a2e;border-radius:6px;padding:5px 7px;color:#e0e0e0;font-size:12px;outline:none;color-scheme:dark}
+.task-edit button{background:#1a1a2e;border:1px solid #2a2a4e;color:#7c8aff;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;white-space:nowrap}
+.task-edit button:hover{background:#2a2a4e}
+.task-desc-edit{flex:1;min-width:140px;background:#111122;border:1px solid #1a1a2e;border-radius:6px;padding:7px 10px;color:#e0e0e0;font-size:12px;outline:none;resize:vertical;min-height:52px;line-height:1.4}
+.task-desc-edit:focus{border-color:#7c8aff}
+.add-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.add-input{flex:1;min-width:100px;background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:10px 12px;color:#e0e0e0;font-size:14px;outline:none}
 .add-input:focus{border-color:#7c8aff}
-.add-select{background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:8px 4px;color:#888;font-size:11px;outline:none;max-width:80px}
-.add-btn{background:#7c8aff;border:none;color:#fff;width:40px;border-radius:8px;font-size:20px;cursor:pointer;font-weight:bold}
+.add-select{background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:8px 4px;color:#888;font-size:11px;outline:none}
+.add-date{background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:8px 6px;color:#888;font-size:11px;outline:none;color-scheme:dark;max-width:120px}
+.add-btn{background:#7c8aff;border:none;color:#fff;width:40px;border-radius:8px;font-size:20px;cursor:pointer;font-weight:bold;flex-shrink:0}
 .add-btn:active{background:#5a6ad4}
-.proto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.proto-card{background:#111122;border:1px solid #1a1a2e;border-radius:12px;padding:12px 6px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s;position:relative}
-.proto-card:active{transform:scale(.95)}
-.proto-card.done{background:#0d1f0d;border-color:#1a3a1a}
-.proto-icon{font-size:24px}
-.proto-check{position:absolute;top:4px;right:6px;color:#2ecc71;font-size:9px;font-weight:bold}
-.proto-name{font-size:10px;color:#aaa;line-height:1.2}
-.proto-xp{font-size:9px;color:#555}
-.proto-card.done .proto-name{color:#2ecc71}
-.proto-card.done .proto-xp{color:#1a5a1a}
-.email-row{background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:12px 14px;margin-bottom:6px}
-.email-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
-.email-sender{font-size:12px;font-weight:600;color:#ccc;display:flex;align-items:center;gap:6px}
-.email-time{font-size:10px;color:#666}
+
+/* ─── EMAIL ───────────────────────────────────────────────── */
+.email-row{background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:10px 14px;margin-bottom:6px}
+.email-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;gap:6px}
+.email-sender{font-size:12px;font-weight:600;color:#ccc;display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.email-time{font-size:10px;color:#555;flex-shrink:0}
 .email-subject{font-size:13px;color:#e0e0e0;margin-bottom:2px}
-.email-snippet{font-size:11px;color:#777;line-height:1.3}
+.email-snippet{font-size:11px;color:#666;line-height:1.3}
 .unread-dot{display:inline-block;width:6px;height:6px;background:#7c8aff;border-radius:50%;flex-shrink:0}
-.event-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;margin-bottom:6px}
-.event-time{font-size:12px;color:#7c8aff;font-weight:600;min-width:65px}
-.event-title{font-size:13px;color:#e0e0e0;flex:1}
-.event-link{font-size:11px;color:#7c8aff;text-decoration:none;padding:3px 8px;border:1px solid #7c8aff;border-radius:6px}
-.link-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.link-card{display:flex;flex-direction:column;align-items:center;gap:4px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:12px 4px;text-decoration:none;transition:all .15s}
+
+/* ─── CALENDAR ────────────────────────────────────────────── */
+.event-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;margin-bottom:6px}
+.event-time{font-size:12px;color:#7c8aff;font-weight:600;min-width:65px;flex-shrink:0}
+.event-title{font-size:13px;color:#e0e0e0;flex:1;min-width:0}
+.event-link{font-size:11px;color:#7c8aff;text-decoration:none;padding:3px 8px;border:1px solid #7c8aff;border-radius:6px;flex-shrink:0}
+
+/* ─── SYSTEM HEALTH ───────────────────────────────────────── */
+.health-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.project-card{background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:11px 13px}
+.project-name{font-size:12px;font-weight:600;color:#ccc;margin-bottom:5px}
+.project-status{display:flex;align-items:center;gap:6px;font-size:11px;color:#aaa;margin-bottom:4px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-green{background:#2ecc71}
+.dot-yellow{background:#f39c12}
+.dot-red{background:#e74c3c}
+.dot-unknown{background:#555}
+.dot-blue{background:#3498db}
+.project-note{font-size:10px;color:#555;line-height:1.4;margin-bottom:4px}
+.project-link{font-size:10px;color:#7c8aff;text-decoration:none;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ─── HOWL WIDGET ─────────────────────────────────────────── */
+.rank-pill{display:inline-flex;align-items:center;gap:6px;background:#1a1a2e;border:1px solid #2a2a4e;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;color:#7c8aff}
+.xp-bar-wrap{background:#1a1a2e;border-radius:4px;height:5px;flex:1}
+.xp-bar{background:#7c8aff;height:5px;border-radius:4px;transition:width .4s}
+.proto-mini{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#111122;border:1px solid #1a1a2e;border-radius:8px;margin-bottom:4px}
+.proto-mini.done{background:#0d1f0d;border-color:#1a3a1a}
+.proto-mini-icon{font-size:17px;flex-shrink:0}
+.proto-mini-name{font-size:12px;color:#ccc;flex:1}
+.proto-mini.done .proto-mini-name{color:#2ecc71}
+.proto-mini-status{font-size:10px;color:#555}
+.proto-mini.done .proto-mini-status{color:#2ecc71}
+.howl-link{display:inline-block;margin-top:10px;font-size:12px;color:#7c8aff;text-decoration:none;border:1px solid #2a2a4e;border-radius:8px;padding:7px 16px;background:#111122}
+
+/* ─── HC / GENERIC CARDS ──────────────────────────────────── */
+.info-card{background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:10px 13px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px}
+.info-icon{font-size:15px;flex-shrink:0;padding-top:1px}
+.info-body{flex:1;min-width:0}
+.info-name{font-size:13px;color:#e0e0e0;font-weight:500}
+.info-note{font-size:11px;color:#555;margin-top:2px;line-height:1.4}
+.info-link{font-size:11px;color:#7c8aff;text-decoration:none;margin-top:3px;display:inline-block}
+
+/* ─── PRIORITY ROWS ───────────────────────────────────────── */
+.pri-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#111122;border:1px solid #1a1a2e;border-radius:8px;margin-bottom:5px}
+.pri-num{font-size:10px;color:#444;font-weight:600;min-width:14px}
+.pri-text{font-size:13px;color:#e0e0e0;flex:1;min-width:0}
+.pri-urgent{color:#ff4444}
+.pri-high{color:#ff8c00}
+.pri-medium{color:#7c8aff}
+.pri-low{color:#555}
+.pri-cat{font-size:10px;padding:2px 5px;border-radius:4px;border:1px solid #333;color:#888;flex-shrink:0}
+
+/* ─── QUICK LINKS ─────────────────────────────────────────── */
+.link-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.link-card{display:flex;flex-direction:column;align-items:center;gap:4px;background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:11px 4px;text-decoration:none;transition:border-color .15s;-webkit-tap-highlight-color:transparent}
 .link-card:active{transform:scale(.95)}
-.link-card span{font-size:10px;color:#7c8aff;text-transform:uppercase;letter-spacing:.3px;font-weight:600}
-.empty-state{text-align:center;color:#555;padding:20px;font-size:13px;background:#111122;border-radius:10px;border:1px solid #1a1a2e}
-.footer{text-align:center;padding:16px 0;font-size:10px;color:#333}
-.loading{text-align:center;color:#555;padding:40px;font-size:14px}
-@media(max-width:600px){#hub{padding:12px}.greeting{font-size:20px}}
-@media(max-width:380px){.metrics-grid{grid-template-columns:repeat(2,1fr)}.proto-grid{grid-template-columns:repeat(2,1fr)}.link-grid{grid-template-columns:repeat(4,1fr)}}
+.link-icon{font-size:19px}
+.link-card span{font-size:9px;color:#7c8aff;text-transform:uppercase;letter-spacing:.3px;font-weight:600;text-align:center}
+
+/* ─── MISC ────────────────────────────────────────────────── */
+.empty-state{text-align:center;color:#555;padding:18px;font-size:13px;background:#111122;border-radius:10px;border:1px solid #1a1a2e}
+.hub-footer{text-align:center;padding:20px 0 10px;font-size:10px;color:#333}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────── */
+@media(max-width:600px){
+  #hub{padding:12px;padding-bottom:env(safe-area-inset-bottom,12px)}
+  .greeting{font-size:20px}
+  .health-grid{grid-template-columns:1fr}
+  .link-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:380px){
+  .metrics-strip{grid-template-columns:repeat(2,1fr)}
+  .link-grid{grid-template-columns:repeat(3,1fr)}
+  .add-select,.add-date{font-size:10px;padding:6px 3px}
+}
 </style>
 </head>
 <body>
 
-<!-- PIN LOCK -->
+<!-- ─── PIN LOCK ─────────────────────────────────────────── -->
 <div id="lock">
   <h1>Jay's Hub</h1>
   <p>Enter PIN</p>
@@ -98,26 +169,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div id="pin-error"></div>
 </div>
 
-<!-- HUB CONTENT -->
+<!-- ─── HUB ──────────────────────────────────────────────── -->
 <div id="hub">
-  <div class="container">
-    <div class="header">
-      <div class="greeting" id="greeting"></div>
-      <div class="date" id="date-line"></div>
-      <div class="sync-info" id="sync-info"></div>
+<div class="container">
+
+  <div class="hub-header">
+    <div class="greeting" id="greeting"></div>
+    <div class="date-line" id="date-line"></div>
+    <div class="metrics-strip" id="metrics">
+      <div class="metric-card"><div class="metric-value">—</div><div class="metric-label">Unread</div></div>
+      <div class="metric-card"><div class="metric-value">—</div><div class="metric-label">Events</div></div>
+      <div class="metric-card"><div class="metric-value">—</div><div class="metric-label">Protocols</div></div>
+      <div class="metric-card"><div class="metric-value">—</div><div class="metric-label">Rank</div></div>
     </div>
-    <div class="metrics-grid" id="metrics"></div>
-    <div class="section">
-      <div class="section-title">Tasks</div>
-      <div class="filter-row" id="task-filters">
+  </div>
+
+  <!-- 1 · TODAY -->
+  <div class="accordion" id="today">
+    <div class="acc-header" onclick="toggleAcc('today')">
+      <div class="acc-left"><span class="acc-icon">📅</span><span class="acc-title">Today</span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body"><div id="today-body"></div></div>
+  </div>
+
+  <!-- 2 · TASKS -->
+  <div class="accordion" id="tasks">
+    <div class="acc-header" onclick="toggleAcc('tasks')">
+      <div class="acc-left"><span class="acc-icon">✅</span><span class="acc-title">Tasks</span><span class="acc-badge" id="tasks-badge"></span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="filter-row">
         <span class="filter-chip active" data-filter="all" onclick="setFilter('all')">All</span>
         <span class="filter-chip" data-filter="today" onclick="setFilter('today')">Today</span>
         <span class="filter-chip" data-filter="week" onclick="setFilter('week')">This Week</span>
-        <span class="filter-chip" data-filter="deleted" onclick="setFilter('deleted')">Deleted</span>
+        <span class="filter-chip" data-filter="deleted" onclick="setFilter('deleted')">Done</span>
       </div>
-      <div id="tasks"><div class="loading">Loading...</div></div>
+      <div id="tasks-body"></div>
       <div class="add-row">
-        <input type="text" id="new-task" placeholder="New task..." class="add-input">
+        <input type="text" id="new-task" placeholder="New task..." class="add-input" onkeydown="if(event.key==='Enter')addTask()">
         <select id="new-cat" class="add-select">
           <option value="personal">personal</option>
           <option value="mercury">mercury</option>
@@ -135,318 +226,604 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           <option value="urgent">urgent</option>
           <option value="low">low</option>
         </select>
-        <input type="date" id="new-due" class="add-date" title="Due date (optional)">
+        <input type="date" id="new-due" class="add-date" title="Due date">
         <button class="add-btn" onclick="addTask()">+</button>
       </div>
     </div>
-    <div class="section">
-      <div class="section-title">HOWL Protocols <span id="proto-count" style="font-size:11px;color:#555;font-weight:400"></span></div>
-      <div class="proto-grid" id="protocols"><div class="loading">Loading...</div></div>
-    </div>
-    <div class="section">
-      <div class="section-title">Schedule</div>
-      <div id="calendar"><div class="loading">Loading...</div></div>
-    </div>
-    <div class="section">
-      <div class="section-title">Email</div>
-      <div id="emails"><div class="loading">Loading...</div></div>
-    </div>
-    <div class="section">
-      <div class="section-title">Quick Links</div>
-      <div class="link-grid" id="links"></div>
-    </div>
-    <div class="footer">Hub v5</div>
   </div>
-</div>
+
+  <!-- 3 · EMAIL -->
+  <div class="accordion" id="email">
+    <div class="acc-header" onclick="toggleAcc('email')">
+      <div class="acc-left"><span class="acc-icon">📧</span><span class="acc-title">Email</span><span class="acc-badge" id="email-badge"></span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body"><div id="email-body"></div></div>
+  </div>
+
+  <!-- 4 · SYSTEM HEALTH -->
+  <div class="accordion" id="health_check">
+    <div class="acc-header" onclick="toggleAcc('health_check')">
+      <div class="acc-left"><span class="acc-icon">🖥️</span><span class="acc-title">System Health</span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body" id="health-body"></div>
+  </div>
+
+  <!-- 5 · MERCURY -->
+  <div class="accordion" id="mercury">
+    <div class="acc-header" onclick="toggleAcc('mercury')">
+      <div class="acc-left"><span class="acc-icon">🌊</span><span class="acc-title">Mercury</span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body"><div id="mercury-body"></div></div>
+  </div>
+
+  <!-- 6 · HOWL WIDGET -->
+  <div class="accordion" id="howl_widget">
+    <div class="acc-header" onclick="toggleAcc('howl_widget')">
+      <div class="acc-left"><span class="acc-icon">🐺</span><span class="acc-title">HOWL</span><span class="acc-badge" id="howl-badge"></span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body"><div id="howl-body"></div></div>
+  </div>
+
+  <!-- 7 · HARMONYCARES -->
+  <div class="accordion" id="harmonycares">
+    <div class="acc-header" onclick="toggleAcc('harmonycares')">
+      <div class="acc-left"><span class="acc-icon">🏥</span><span class="acc-title">HarmonyCares</span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body" id="harmonycares-body"></div>
+  </div>
+
+  <!-- 8 · CODEX MUSIC -->
+  <div class="accordion" id="codex_music">
+    <div class="acc-header" onclick="toggleAcc('codex_music')">
+      <div class="acc-left"><span class="acc-icon">🎵</span><span class="acc-title">The Codex</span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body" id="codex-body"></div>
+  </div>
+
+  <!-- 9 · WASHU -->
+  <div class="accordion" id="washu">
+    <div class="acc-header" onclick="toggleAcc('washu')">
+      <div class="acc-left"><span class="acc-icon">🎓</span><span class="acc-title">WashU</span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body" id="washu-body"></div>
+  </div>
+
+  <!-- 10 · FINANCIAL -->
+  <div class="accordion" id="financial">
+    <div class="acc-header" onclick="toggleAcc('financial')">
+      <div class="acc-left"><span class="acc-icon">💰</span><span class="acc-title">Financial</span><span class="acc-badge" id="fin-badge"></span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body"><div id="financial-body"></div></div>
+  </div>
+
+  <!-- 11 · FAMILY -->
+  <div class="accordion" id="family">
+    <div class="acc-header" onclick="toggleAcc('family')">
+      <div class="acc-left"><span class="acc-icon">👨‍👦</span><span class="acc-title">Family</span><span class="acc-badge" id="fam-badge"></span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body"><div id="family-body"></div></div>
+  </div>
+
+  <!-- 12 · HEALTH & WELLNESS -->
+  <div class="accordion" id="health_wellness">
+    <div class="acc-header" onclick="toggleAcc('health_wellness')">
+      <div class="acc-left"><span class="acc-icon">💪</span><span class="acc-title">Health &amp; Wellness</span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body"><div id="wellness-body"></div></div>
+  </div>
+
+  <!-- 13 · QUICK LINKS -->
+  <div class="accordion" id="quick_links">
+    <div class="acc-header" onclick="toggleAcc('quick_links')">
+      <div class="acc-left"><span class="acc-icon">🔗</span><span class="acc-title">Quick Links</span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body" id="links-body"></div>
+  </div>
+
+  <!-- 14 · ACCOUNTS & PASSWORDS -->
+  <div class="accordion" id="accounts_passwords">
+    <div class="acc-header" onclick="toggleAcc('accounts_passwords')">
+      <div class="acc-left"><span class="acc-icon">🔐</span><span class="acc-title">Accounts &amp; Passwords</span></div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="empty-state">Consolidation pending.<br>See Hub task: "Consolidate passwords into Chrome".</div>
+    </div>
+  </div>
+
+  <div class="hub-footer">Hub v7 &nbsp;·&nbsp; <span id="last-synced">Syncing…</span></div>
+
+</div><!-- .container -->
+</div><!-- #hub -->
 
 <script>
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
 const SB_URL = 'https://qlksnddlijlwgysovrky.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFsa3NuZGRsaWpsd2d5c292cmt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDY2NzYsImV4cCI6MjA5MDU4MjY3Nn0.8hmYCN7rtEmBKeyDlnoznLbO723xrP_b98XiotPbHkM';
 const JAY_ID = '199a9152-ada2-4da2-abcf-ecea532d8349';
-const PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'; // sha256 of "1234"
+const PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
+const HEADERS = {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
 
-const headers = {'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json'};
+const PRI_ORDER = {urgent:0,high:1,medium:2,low:3};
+const PRI_COLOR = {urgent:'#ff4444',high:'#ff8c00',medium:'#7c8aff',low:'#555'};
+const CAT_COLOR = {mercury:'#00d4aa',howl:'#e63946',harmonycares:'#4ecdc4',career:'#ffd166',personal:'#7c8aff',family:'#ff69b4',health:'#2ecc71',tech:'#9b59b6',financial:'#f39c12',education:'#3498db'};
 
-// --- PIN ---
-async function sha256(msg) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
+const RANK_LADDER = ['runt','pup','scout','hunter','warrior','alpha'];
+const RANK_XP    = {runt:0,pup:100,scout:400,hunter:1000,warrior:2500,alpha:5000};
 
-document.getElementById('pin-input').addEventListener('input', async function() {
-  if (this.value.length === 4) {
-    const hash = await sha256(this.value);
-    if (hash === PIN_HASH) {
-      document.getElementById('lock').style.display = 'none';
-      document.getElementById('hub').style.display = 'block';
-      sessionStorage.setItem('hub_auth', '1');
-      loadHub();
+const PROJECTS = [
+  {name:'jay-hub',              dot:'green',   label:'Live',                url:'https://jay-hub-git-main-jay-klines-projects.vercel.app', note:'This app · Hub v7'},
+  {name:'howl-pack',            dot:'yellow',  label:'Deployed — spec wrong',url:'https://howl-pack.vercel.app',                          note:'Awaiting v4 rebuild'},
+  {name:'mercury-quote-generator',dot:'green', label:'Live',                url:'https://mercury-quote-generator.vercel.app',              note:'Valet trash quote generator'},
+  {name:'stt-trip-hub',         dot:'green',   label:'Live',                url:'https://stt-trip-hub.vercel.app',                         note:'STT trip hub'},
+  {name:'mercury-platform',     dot:'unknown', label:'Unverified',          url:'https://mercury-platform.vercel.app',                     note:'Status not confirmed'},
+  {name:'jay-command-center',   dot:'red',     label:'Retired',             url:null,                                                      note:'Replaced by jay-hub'},
+  {name:'beast-mode-protocol',  dot:'yellow',  label:'Legacy',              url:'https://beast-mode-protocol.vercel.app',                  note:'Keep until HOWL v4'},
+  {name:'operation-demon-slayer',dot:'yellow', label:'Legacy',              url:'https://operation-demon-slayer.vercel.app',               note:'Keep until HOWL v4'},
+  {name:'adhd-protocol',        dot:'yellow',  label:'Legacy',              url:'https://adhd-protocol.vercel.app',                        note:'Keep until HOWL v4'},
+];
+const DATABASES = [
+  {name:'Supabase: howl-pack',      dot:'green', label:'Active & healthy', url:'https://supabase.com/dashboard/project/qlksnddlijlwgysovrky', note:'Primary database'},
+  {name:'Supabase: kline-stt-trip', dot:'green', label:'Active',           url:null,                                                          note:'Heartbeat scheduled Mondays'},
+];
+const HC_PROJECTS = [
+  {icon:'📊',name:'Market Performance Dashboard',  note:'In progress'},
+  {icon:'📋',name:'Quality Scorecard Enhancements',note:'Stewart request — in review'},
+  {icon:'📈',name:'SVA v2.3',                      note:'In progress'},
+  {icon:'🔬',name:'HCC Analysis',                  note:'Active analysis'},
+  {icon:'📄',name:'Drive Handover Doc',             note:'Pending'},
+];
+const QUICK_LINKS = [
+  {icon:'📧',label:'Gmail',      url:'https://mail.google.com'},
+  {icon:'📅',label:'GCal',       url:'https://calendar.google.com'},
+  {icon:'📮',label:'Outlook',    url:'https://outlook.office.com'},
+  {icon:'🟠',label:'HubSpot',    url:'https://app.hubspot.com'},
+  {icon:'🚀',label:'Apollo',     url:'https://app.apollo.io'},
+  {icon:'▲', label:'Vercel',     url:'https://vercel.com/dashboard'},
+  {icon:'🐘',label:'Supabase',   url:'https://supabase.com/dashboard/project/qlksnddlijlwgysovrky'},
+  {icon:'🐙',label:'GitHub',     url:'https://github.com/21jdkline'},
+  {icon:'🐺',label:'HOWL',       url:'https://howl-pack.vercel.app'},
+  {icon:'💬',label:'CommonRoom', url:'https://app.commonroom.io'},
+  {icon:'💎',label:'Quotes',     url:'https://mercury-quote-generator.vercel.app'},
+  {icon:'✈️',label:'STT Hub',    url:'https://stt-trip-hub.vercel.app'},
+];
+const DEFAULT_OPEN = ['today','tasks'];
+
+// ─── GLOBAL STATE ─────────────────────────────────────────────────────────────
+let G = {tasks:[],protocols:[],logs:[],profile:{},emails:[],events:[],metrics:{}};
+let g_filter = 'all';
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function timeAgo(d){const m=Math.floor((Date.now()-new Date(d))/60000);if(m<1)return 'just now';if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago';}
+function fmtTime(iso){return new Date(iso).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
+function todayISO(){return new Date().toLocaleDateString('en-CA');}
+function mc(val,label){return '<div class="metric-card"><div class="metric-value">'+val+'</div><div class="metric-label">'+label+'</div></div>';}
+
+// ─── PIN FLOW ─────────────────────────────────────────────────────────────────
+async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+
+document.getElementById('pin-input').addEventListener('input',async function(){
+  if(this.value.length===4){
+    const hash=await sha256(this.value);
+    if(hash===PIN_HASH){
+      document.getElementById('lock').style.display='none';
+      document.getElementById('hub').style.display='block';
+      sessionStorage.setItem('hub_auth','1');
+      initHub();
     } else {
-      document.getElementById('pin-error').textContent = 'Wrong PIN';
-      this.value = '';
+      document.getElementById('pin-error').textContent='Wrong PIN';
+      this.value='';
     }
   }
 });
 
-// Auto-unlock if already authed this session
-if (sessionStorage.getItem('hub_auth') === '1') {
-  document.getElementById('lock').style.display = 'none';
-  document.getElementById('hub').style.display = 'block';
-  loadHub();
+if(sessionStorage.getItem('hub_auth')==='1'){
+  document.getElementById('lock').style.display='none';
+  document.getElementById('hub').style.display='block';
+  initHub();
 }
 
-// --- SUPABASE HELPERS ---
-async function sbGet(table, query) {
-  const r = await fetch(SB_URL + '/rest/v1/' + table + '?' + query, {headers});
-  return r.json();
-}
-async function sbPost(table, body) {
-  const h = {...headers, 'Prefer': 'return=minimal'};
-  await fetch(SB_URL + '/rest/v1/' + table, {method:'POST', headers:h, body: JSON.stringify(body)});
-}
-async function sbPatch(table, query, body) {
-  const h = {...headers, 'Prefer': 'return=minimal'};
-  await fetch(SB_URL + '/rest/v1/' + table + '?' + query, {method:'PATCH', headers:h, body: JSON.stringify(body)});
-}
-async function sbDelete(table, query) {
-  await fetch(SB_URL + '/rest/v1/' + table + '?' + query, {method:'DELETE', headers});
-}
+// ─── SUPABASE HELPERS ─────────────────────────────────────────────────────────
+async function sbGet(table,q){const r=await fetch(SB_URL+'/rest/v1/'+table+'?'+q,{headers:HEADERS});return r.json();}
+async function sbPost(table,body){const h={...HEADERS,'Prefer':'return=minimal'};await fetch(SB_URL+'/rest/v1/'+table,{method:'POST',headers:h,body:JSON.stringify(body)});}
+async function sbPatch(table,q,body){const h={...HEADERS,'Prefer':'return=minimal'};await fetch(SB_URL+'/rest/v1/'+table+'?'+q,{method:'PATCH',headers:h,body:JSON.stringify(body)});}
+async function sbDelete(table,q){await fetch(SB_URL+'/rest/v1/'+table+'?'+q,{method:'DELETE',headers:HEADERS});}
 
-function esc(s) { if (!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function timeAgo(d) {
-  const diff = Date.now() - new Date(d).getTime();
-  const m = Math.floor(diff/60000);
-  if (m < 1) return 'just now';
-  if (m < 60) return m + 'm ago';
-  const h = Math.floor(m/60);
-  if (h < 24) return h + 'h ago';
-  return Math.floor(h/24) + 'd ago';
+// ─── ACCORDION SYSTEM ─────────────────────────────────────────────────────────
+function initAccordions(){
+  document.querySelectorAll('.accordion').forEach(acc=>{
+    const id=acc.id;
+    const stored=localStorage.getItem('acc_'+id);
+    const open=stored!==null ? stored==='1' : DEFAULT_OPEN.includes(id);
+    if(open) acc.classList.add('open');
+  });
 }
 
-// --- STATE ---
-let allProtocols = [];
-let todayLogs = [];
-let profile = null;
+function toggleAcc(id){
+  const acc=document.getElementById(id);
+  const isOpen=acc.classList.toggle('open');
+  localStorage.setItem('acc_'+id,isOpen?'1':'0');
+}
 
-// --- LOAD ---
-async function loadHub() {
-  const now = new Date();
-  const hour = now.getHours();
-  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('greeting').textContent = greeting + ', Jay';
-  document.getElementById('date-line').textContent = now.toLocaleDateString('en-US', {weekday:'long',month:'long',day:'numeric',year:'numeric'});
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function initHub(){
+  const now=new Date();
+  const h=now.getHours();
+  document.getElementById('greeting').textContent=(h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', Jay';
+  document.getElementById('date-line').textContent=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  initAccordions();
+  renderStaticSections();
+  loadData();
+  setInterval(loadData, 5*60*1000);
+}
 
-  // Quick links
-  const links = [
-    {l:'Gmail',u:'https://mail.google.com'},{l:'Calendar',u:'https://calendar.google.com'},
-    {l:'HubSpot',u:'https://app.hubspot.com'},{l:'Apollo',u:'https://app.apollo.io'},
-    {l:'Outlook',u:'https://outlook.office.com'},{l:'HOWL',u:'https://howl-pack.vercel.app'},
-    {l:'Quotes',u:'https://mercury-quote-generator.vercel.app'},
-    {l:'Supabase',u:'https://supabase.com/dashboard/project/qlksnddlijlwgysovrky'},
-    {l:'GitHub',u:'https://github.com/21jdkline'},{l:'Vercel',u:'https://vercel.com/dashboard'}
-  ];
-  document.getElementById('links').innerHTML = links.map(x => '<a href="'+x.u+'" class="link-card" target="_blank"><span>'+x.l+'</span></a>').join('');
+// ─── STATIC SECTIONS (rendered once) ─────────────────────────────────────────
+function renderStaticSections(){
+  // System Health
+  document.getElementById('health-body').innerHTML=
+    '<div class="sub-label">Vercel Projects</div>'
+    +'<div class="health-grid">'
+    +PROJECTS.map(p=>{
+      const linkHtml=p.url
+        ?'<a class="project-link" href="'+esc(p.url)+'" target="_blank">'+esc(p.url.replace('https://',''))+'</a>'
+        :'<span style="font-size:10px;color:#333">no URL</span>';
+      return '<div class="project-card">'
+        +'<div class="project-name">'+esc(p.name)+'</div>'
+        +'<div class="project-status"><span class="dot dot-'+p.dot+'"></span>'+esc(p.label)+'</div>'
+        +'<div class="project-note">'+esc(p.note)+'</div>'
+        +linkHtml+'</div>';
+    }).join('')
+    +'</div>'
+    +'<div class="sub-label">Databases</div>'
+    +'<div class="health-grid">'
+    +DATABASES.map(p=>{
+      const linkHtml=p.url?'<a class="project-link" href="'+esc(p.url)+'" target="_blank">Dashboard →</a>':'';
+      return '<div class="project-card">'
+        +'<div class="project-name">'+esc(p.name)+'</div>'
+        +'<div class="project-status"><span class="dot dot-'+p.dot+'"></span>'+esc(p.label)+'</div>'
+        +'<div class="project-note">'+esc(p.note)+'</div>'
+        +linkHtml+'</div>';
+    }).join('')
+    +'</div>';
 
-  // Load all data in parallel
-  const today = now.toLocaleDateString('en-CA');
-  const [metrics, emails, events, tasks, protocols, logs, profiles] = await Promise.all([
-    sbGet('hub_metrics', 'select=*'),
-    sbGet('hub_emails', 'select=*&order=date.desc&limit=10'),
-    sbGet('hub_calendar', 'select=*&order=start_time.asc&limit=10'),
-    sbGet('tasks', 'select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=20'),
-    sbGet('protocols', 'select=*&is_active=eq.true&order=sort_order.asc'),
-    sbGet('daily_logs', 'select=*,protocols(name,icon,xp_reward)&profile_id=eq.' + JAY_ID + '&log_date=eq.' + today),
-    sbGet('profiles', 'select=*&id=eq.' + JAY_ID),
-  ]);
+  // HarmonyCares
+  document.getElementById('harmonycares-body').innerHTML=
+    '<p style="font-size:11px;color:#555;margin-bottom:10px">Active work projects at Harmony Cares</p>'
+    +HC_PROJECTS.map(p=>'<div class="info-card"><span class="info-icon">'+p.icon+'</span><div class="info-body"><div class="info-name">'+esc(p.name)+'</div><div class="info-note">'+esc(p.note)+'</div></div></div>').join('');
 
-  allProtocols = protocols;
-  todayLogs = logs;
-  profile = profiles[0] || {};
+  // Codex Music
+  document.getElementById('codex-body').innerHTML=
+    '<div class="info-card"><span class="info-icon">🎵</span><div class="info-body">'
+    +'<div class="info-name">The Codex — Music Curation / Album Project</div>'
+    +'<div class="info-note">Status: scoped, not started</div>'
+    +'<div class="info-note" style="margin-top:3px">6 Markers framework · 50 candidates · DMT protocols · playlists</div>'
+    +'<div class="info-note" style="margin-top:5px;font-family:monospace;font-size:10px;color:#444">05_Side_Projects\\Codex\\CODEX_ideation.md</div>'
+    +'</div></div>'
+    +'<div class="empty-state" style="margin-top:8px;font-size:11px">Music/album project — not a software build.<br>SQL Pictograph (the SQL tool) lives under System Health.</div>';
 
-  const m = {};
-  (metrics||[]).forEach(r => m[r.key] = r.value);
-  const lastSync = m.last_sync?.timestamp ? timeAgo(m.last_sync.timestamp) : 'not synced yet';
-  document.getElementById('sync-info').textContent = 'Last sync: ' + lastSync;
+  // WashU
+  document.getElementById('washu-body').innerHTML=
+    '<div class="empty-state">Education tracking placeholder — WashU courses, capstone, certifications.<br><br>'
+    +'<span style="font-size:10px;color:#444;font-family:monospace">03_Education_WashU\\</span></div>';
 
-  // Metrics
-  const xp = profile.total_xp || 0;
-  const rank = profile.current_rank || 'runt';
-  document.getElementById('metrics').innerHTML =
-    mc(m.gmail_unread?.count ?? '--', 'Unread') +
-    mc(m.calendar_today?.count ?? 0, 'Events') +
-    mc(logs.length + '/' + protocols.length, 'Protocols') +
-    mc(xp.toLocaleString(), rank);
+  // Quick Links
+  document.getElementById('links-body').innerHTML=
+    '<div class="link-grid">'
+    +QUICK_LINKS.map(l=>'<a href="'+esc(l.url)+'" class="link-card" target="_blank"><span class="link-icon">'+l.icon+'</span><span>'+esc(l.label)+'</span></a>').join('')
+    +'</div>';
+}
 
-  // Tasks
-  renderTasks(tasks);
+// ─── DATA LOADING ─────────────────────────────────────────────────────────────
+async function loadData(){
+  const today=todayISO();
+  try {
+    const [metrics,emails,events,tasks,protocols,logs,profiles]=await Promise.all([
+      sbGet('hub_metrics','select=*'),
+      sbGet('hub_emails','select=*&order=date.desc&limit=10'),
+      sbGet('hub_calendar','select=*&order=start_time.asc&limit=10'),
+      sbGet('tasks','select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=100'),
+      sbGet('protocols','select=*&is_active=eq.true&order=sort_order.asc'),
+      sbGet('daily_logs','select=*,protocols(name,icon,xp_reward)&profile_id=eq.'+JAY_ID+'&log_date=eq.'+today),
+      sbGet('profiles','select=*&id=eq.'+JAY_ID),
+    ]);
+    G.metrics={};(metrics||[]).forEach(r=>G.metrics[r.key]=r.value);
+    G.emails=emails||[];
+    G.events=events||[];
+    G.tasks=tasks||[];
+    G.protocols=protocols||[];
+    G.logs=logs||[];
+    G.profile=(profiles||[])[0]||{};
+    renderAll();
+    document.getElementById('last-synced').textContent='Last synced '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  } catch(e){
+    console.error('loadData error:',e);
+    document.getElementById('last-synced').textContent='Sync error · '+new Date().toLocaleTimeString();
+  }
+}
 
-  // Protocols
-  renderProtocols();
+// Re-fetch tasks and re-render task-dependent sections (used after CRUD ops)
+async function refreshTasks(){
+  const tasks=await sbGet('tasks','select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=100');
+  G.tasks=tasks||[];
+  _doRenderTasks(true);
+  renderToday();
+  renderFinancial();
+  renderFamily();
+}
 
-  // Calendar
-  if (!events || events.length === 0) {
-    document.getElementById('calendar').innerHTML = '<div class="empty-state">No events on today\'s calendar.</div>';
+// ─── RENDER ALL ───────────────────────────────────────────────────────────────
+function renderAll(){
+  renderMetrics();
+  renderToday();
+  renderTasks();
+  renderEmail();
+  renderMercury();
+  renderHowlWidget();
+  renderFinancial();
+  renderFamily();
+  renderHealthWellness();
+}
+
+function renderMetrics(){
+  const xp=G.profile.total_xp||0;
+  const rank=G.profile.current_rank||'runt';
+  document.getElementById('metrics').innerHTML=
+    mc(G.metrics.gmail_unread?.count??'—','Unread')+
+    mc(G.metrics.calendar_today?.count??G.events.length,'Events')+
+    mc(G.logs.length+'/'+G.protocols.length,'Protocols')+
+    mc(xp.toLocaleString(),rank.toUpperCase());
+}
+
+// ─── TODAY ────────────────────────────────────────────────────────────────────
+function renderToday(){
+  let html='<div class="sub-label">Schedule</div>';
+  if(!G.events.length){
+    html+='<div class="empty-state">No events synced.</div>';
   } else {
-    document.getElementById('calendar').innerHTML = events.map(ev => {
-      const t = new Date(ev.start_time).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    html+=G.events.map(ev=>{
+      const t=fmtTime(ev.start_time);
       return '<div class="event-row"><span class="event-time">'+t+'</span><span class="event-title">'+esc(ev.title)+'</span>'+(ev.meet_link?'<a class="event-link" href="'+esc(ev.meet_link)+'" target="_blank">Join</a>':'')+'</div>';
     }).join('');
   }
-
-  // Emails
-  if (!emails || emails.length === 0) {
-    document.getElementById('emails').innerHTML = '<div class="empty-state">No emails synced yet.</div>';
+  const topTasks=[...G.tasks].filter(t=>t.priority==='urgent'||t.priority==='high').sort((a,b)=>(PRI_ORDER[a.priority]??2)-(PRI_ORDER[b.priority]??2)).slice(0,5);
+  html+='<div class="sub-label" style="margin-top:14px">Top Priorities</div>';
+  if(!topTasks.length){
+    html+='<div class="empty-state">No urgent or high-priority tasks.</div>';
   } else {
-    document.getElementById('emails').innerHTML = emails.map(e => {
-      const sender = esc((e.sender||'').split('<')[0].trim());
-      const dot = e.is_unread ? '<span class="unread-dot"></span>' : '';
-      return '<div class="email-row"><div class="email-header"><span class="email-sender">'+dot+sender+'</span><span class="email-time">'+timeAgo(e.date)+'</span></div><div class="email-subject">'+esc(e.subject)+'</div><div class="email-snippet">'+esc((e.snippet||'').substring(0,90))+'</div></div>';
+    html+=topTasks.map((t,i)=>{
+      const cc=CAT_COLOR[t.category]||'#7c8aff';
+      return '<div class="pri-row"><span class="pri-num">'+(i+1)+'</span><span class="pri-text pri-'+t.priority+'">'+esc(t.title)+'</span><span class="pri-cat" style="border-color:'+cc+';color:'+cc+'">'+esc(t.category)+'</span></div>';
     }).join('');
   }
+  document.getElementById('today-body').innerHTML=html;
 }
 
-function mc(val, label) {
-  return '<div class="metric-card"><div class="metric-value">'+val+'</div><div class="metric-label">'+label+'</div></div>';
+// ─── TASKS ────────────────────────────────────────────────────────────────────
+function renderTasks(){
+  // Avoid disrupting live editing during auto-refresh
+  const a=document.activeElement;
+  if(a&&(a.id==='new-task'||a.classList.contains('task-desc-edit')))return;
+  _doRenderTasks(false);
 }
 
-// --- TASKS ---
-const priOrder = {urgent:0,high:1,medium:2,low:3};
-const priColor = {urgent:'#ff4444',high:'#ff8c00',medium:'#7c8aff',low:'#555'};
-const catColor = {mercury:'#00d4aa',howl:'#e63946',harmonycares:'#4ecdc4',career:'#ffd166',personal:'#7c8aff',family:'#ff69b4',health:'#2ecc71',tech:'#9b59b6',financial:'#f39c12',education:'#3498db',codex:'#e74c3c'};
-
-let currentFilter = 'all';
-
-function tasksQuery() {
-  const today = new Date().toISOString().slice(0,10);
-  const weekEnd = new Date(Date.now() + 7*24*60*60*1000).toISOString().slice(0,10);
-  if (currentFilter === 'today')   return 'select=*&status=in.(pending,in_progress)&due_date=eq.'+today+'&order=priority.asc,created_at.desc&limit=50';
-  if (currentFilter === 'week')    return 'select=*&status=in.(pending,in_progress)&due_date=gte.'+today+'&due_date=lte.'+weekEnd+'&order=due_date.asc&limit=50';
-  if (currentFilter === 'deleted') return 'select=*&status=eq.completed&order=completed_at.desc&limit=50';
-  return 'select=*&status=in.(pending,in_progress)&order=created_at.desc&limit=50';
-}
-
-async function loadTasks() {
-  const tasks = await sbGet('tasks', tasksQuery());
-  renderTasks(tasks);
-}
-
-function setFilter(f) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.dataset.filter === f));
-  loadTasks();
-}
-
-function renderTasks(tasks) {
-  if (!tasks || tasks.length === 0) {
-    document.getElementById('tasks').innerHTML = '<div class="empty-state">No tasks yet. Add one below.</div>';
+function _doRenderTasks(force){
+  if(!force){
+    const a=document.activeElement;
+    if(a&&(a.id==='new-task'||a.classList.contains('task-desc-edit')))return;
+  }
+  if(g_filter==='deleted'){
+    sbGet('tasks','select=*&status=eq.completed&order=completed_at.desc&limit=50').then(t=>_renderTaskList(t||[],'deleted'));
     return;
   }
-  tasks.sort((a,b) => (priOrder[a.priority]??2) - (priOrder[b.priority]??2));
-  document.getElementById('tasks').innerHTML = tasks.map(t => {
-    const pc = priColor[t.priority]||'#7c8aff';
-    const cc = catColor[t.category]||'#7c8aff';
-    const due = t.due_date ? '<span class="tag" style="border-color:#ffd166;color:#ffd166">due '+t.due_date+'</span>' : '';
-    const descBlock = t.description ? '<div class="task-desc">'+esc(t.description)+'</div>' : '';
-    const editBlock = '<div class="task-edit" onclick="event.stopPropagation()">'
-      + '<label>Due:</label>'
-      + '<input type="date" value="'+(t.due_date||'')+'" onchange="updateDue(\''+t.id+'\',this.value)">'
-      + (t.due_date ? '<button onclick="updateDue(\''+t.id+'\',\'\')">clear</button>' : '')
-      + '</div>';
-    const expand = '<div class="task-expand" id="exp-'+t.id+'" style="display:none">'+descBlock+editBlock+'</div>';
-    return '<div class="task-row" onclick="toggleTask(\''+t.id+'\')"><button class="task-check" onclick="event.stopPropagation();completeTask(\''+t.id+'\')">o</button><div class="task-body"><div class="task-title">'+esc(t.title)+'</div><div class="task-meta"><span class="tag" style="border-color:'+cc+'">'+t.category+'</span><span class="tag" style="border-color:'+pc+';color:'+pc+'">'+t.priority+'</span>'+due+'</div>'+expand+'</div></div>';
+  const today=todayISO();
+  const weekEnd=new Date(Date.now()+7*24*60*60*1000).toISOString().slice(0,10);
+  let tasks=[...G.tasks];
+  if(g_filter==='today') tasks=tasks.filter(t=>t.due_date===today);
+  else if(g_filter==='week') tasks=tasks.filter(t=>t.due_date&&t.due_date>=today&&t.due_date<=weekEnd);
+  tasks.sort((a,b)=>(PRI_ORDER[a.priority]??2)-(PRI_ORDER[b.priority]??2));
+  _renderTaskList(tasks,g_filter);
+}
+
+function _renderTaskList(tasks,filter){
+  const el=document.getElementById('tasks-body');
+  const badge=document.getElementById('tasks-badge');
+  if(badge) badge.textContent=tasks.length+(filter==='deleted'?' done':' open');
+  if(!tasks.length){el.innerHTML='<div class="empty-state">No tasks'+(filter!=='all'?' matching filter':' yet')+'.</div>';return;}
+  el.innerHTML=tasks.map(t=>{
+    const pc=PRI_COLOR[t.priority]||'#7c8aff';
+    const cc=CAT_COLOR[t.category]||'#7c8aff';
+    const due=t.due_date?'<span class="tag" style="border-color:#ffd166;color:#ffd166">due '+esc(t.due_date)+'</span>':'';
+    const checkLabel=filter==='deleted'?'↩':'o';
+    const checkTitle=filter==='deleted'?'Restore':'Complete';
+    const expandContent=
+      '<div class="task-edit" onclick="event.stopPropagation()">'
+      +'<label>Desc:</label>'
+      +'<textarea id="desc-'+t.id+'" class="task-desc-edit" onclick="event.stopPropagation()">'+esc(t.description||'')+'</textarea>'
+      +'<button onclick="event.stopPropagation();updateDesc(\''+t.id+'\')">save</button>'
+      +'</div>'
+      +'<div class="task-edit" onclick="event.stopPropagation()">'
+      +'<label>Due:</label>'
+      +'<input type="date" value="'+esc(t.due_date||'')+'" onchange="updateDue(\''+t.id+'\',this.value)">'
+      +(t.due_date?'<button onclick="event.stopPropagation();updateDue(\''+t.id+'\',\'\')">clear</button>':'')
+      +'<button onclick="event.stopPropagation();completeTask(\''+t.id+'\')" title="'+checkTitle+'">'+checkLabel+'</button>'
+      +'</div>';
+    return '<div class="task-row" onclick="toggleTask(\''+t.id+'\')"><button class="task-check" onclick="event.stopPropagation();completeTask(\''+t.id+'\')" title="'+checkTitle+'">'+checkLabel+'</button>'
+      +'<div class="task-body"><div class="task-title">'+esc(t.title)+'</div>'
+      +'<div class="task-meta"><span class="tag" style="border-color:'+cc+';color:'+cc+'">'+esc(t.category)+'</span><span class="tag" style="border-color:'+pc+';color:'+pc+'">'+esc(t.priority)+'</span>'+due+'</div>'
+      +'<div class="task-expand" id="exp-'+t.id+'" style="display:none">'+expandContent+'</div>'
+      +'</div></div>';
   }).join('');
 }
 
-function toggleTask(id) {
-  const d = document.getElementById('exp-'+id);
-  if (d) d.style.display = d.style.display === 'none' ? 'block' : 'none';
+function toggleTask(id){const d=document.getElementById('exp-'+id);if(d)d.style.display=d.style.display==='none'?'block':'none';}
+
+function setFilter(f){
+  g_filter=f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.toggle('active',c.dataset.filter===f));
+  _doRenderTasks(true);
 }
 
-async function updateDue(id, val) {
-  await sbPatch('tasks', 'id=eq.'+id, {due_date: val || null, updated_at: new Date().toISOString()});
-  loadTasks();
+// ─── TASK CRUD ────────────────────────────────────────────────────────────────
+async function addTask(){
+  const input=document.getElementById('new-task');
+  const title=input.value.trim();if(!title)return;
+  const payload={title,category:document.getElementById('new-cat').value,priority:document.getElementById('new-pri').value,status:'pending'};
+  const due=document.getElementById('new-due').value;if(due)payload.due_date=due;
+  await sbPost('tasks',payload);
+  input.value='';document.getElementById('new-due').value='';
+  await refreshTasks();
 }
 
-async function completeTask(id) {
-  // In Deleted view, the circle restores (un-completes). Elsewhere it completes.
-  if (currentFilter === 'deleted') {
-    await sbPatch('tasks', 'id=eq.'+id, {status:'pending', completed_at: null, updated_at: new Date().toISOString()});
+async function completeTask(id){
+  if(g_filter==='deleted'){
+    await sbPatch('tasks','id=eq.'+id,{status:'pending',completed_at:null,updated_at:new Date().toISOString()});
   } else {
-    await sbPatch('tasks', 'id=eq.'+id, {status:'completed', completed_at: new Date().toISOString(), updated_at: new Date().toISOString()});
+    await sbPatch('tasks','id=eq.'+id,{status:'completed',completed_at:new Date().toISOString(),updated_at:new Date().toISOString()});
   }
-  loadTasks();
+  await refreshTasks();
 }
 
-async function addTask() {
-  const input = document.getElementById('new-task');
-  const title = input.value.trim();
-  if (!title) return;
-  const category = document.getElementById('new-cat').value;
-  const priority = document.getElementById('new-pri').value;
-  const dueRaw = document.getElementById('new-due').value;
-  const payload = {title, category, priority, status:'pending'};
-  if (dueRaw) payload.due_date = dueRaw;
-  await sbPost('tasks', payload);
-  input.value = '';
-  document.getElementById('new-due').value = '';
-  loadTasks();
+async function updateDue(id,val){
+  await sbPatch('tasks','id=eq.'+id,{due_date:val||null,updated_at:new Date().toISOString()});
+  const idx=G.tasks.findIndex(t=>t.id===id);
+  if(idx!==-1)G.tasks[idx].due_date=val||null;
+  _doRenderTasks(true);
 }
 
-document.getElementById('new-task').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') addTask();
-});
+async function updateDesc(id){
+  const ta=document.getElementById('desc-'+id);if(!ta)return;
+  const val=ta.value.trim();
+  await sbPatch('tasks','id=eq.'+id,{description:val||null,updated_at:new Date().toISOString()});
+  const idx=G.tasks.findIndex(t=>t.id===id);
+  if(idx!==-1)G.tasks[idx].description=val||null;
+  _doRenderTasks(true);
+  // Re-open the expand row after re-render
+  setTimeout(()=>{const exp=document.getElementById('exp-'+id);if(exp)exp.style.display='block';},20);
+}
 
-// --- PROTOCOLS ---
-function renderProtocols() {
-  const loggedIds = new Set(todayLogs.map(l => l.protocol_id));
-  document.getElementById('proto-count').textContent = todayLogs.length + ' of ' + allProtocols.length + ' today';
-  document.getElementById('protocols').innerHTML = allProtocols.map(p => {
-    const done = loggedIds.has(p.id);
-    const log = todayLogs.find(l => l.protocol_id === p.id);
-    if (done && log) {
-      return '<div class="proto-card done" onclick="undoProtocol(\''+log.id+'\',\''+p.id+'\','+p.xp_reward+')"><span class="proto-icon">'+p.icon+'</span><span class="proto-check">DONE</span><span class="proto-name">'+esc(p.name)+'</span><span class="proto-xp">+'+p.xp_reward+' XP</span></div>';
-    }
-    return '<div class="proto-card" onclick="logProtocol(\''+p.id+'\','+p.xp_reward+')"><span class="proto-icon">'+p.icon+'</span><span class="proto-name">'+esc(p.name)+'</span><span class="proto-xp">+'+p.xp_reward+' XP</span></div>';
+// ─── EMAIL ────────────────────────────────────────────────────────────────────
+function renderEmail(){
+  const unread=G.emails.filter(e=>e.is_unread).length;
+  const badge=document.getElementById('email-badge');
+  if(badge)badge.textContent=unread>0?unread+' unread':'';
+  if(!G.emails.length){document.getElementById('email-body').innerHTML='<div class="empty-state">No emails synced yet.</div>';return;}
+  document.getElementById('email-body').innerHTML=G.emails.map(e=>{
+    const sender=esc((e.sender||'').split('<')[0].trim());
+    const dot=e.is_unread?'<span class="unread-dot"></span>':'';
+    return '<div class="email-row"><div class="email-header"><span class="email-sender">'+dot+sender+'</span><span class="email-time">'+timeAgo(e.date)+'</span></div><div class="email-subject">'+esc(e.subject)+'</div><div class="email-snippet">'+esc((e.snippet||'').substring(0,90))+'</div></div>';
   }).join('');
 }
 
-async function logProtocol(protocolId, xp) {
-  const today = new Date().toLocaleDateString('en-CA');
-  await sbPost('daily_logs', {profile_id: JAY_ID, protocol_id: protocolId, log_date: today, xp_earned: xp});
-  // Update XP
-  const newXp = (profile.total_xp||0) + xp;
-  let newRank = profile.current_rank;
-  if (newXp >= 5000) newRank = 'alpha';
-  else if (newXp >= 2500) newRank = 'warrior';
-  else if (newXp >= 1000) newRank = 'hunter';
-  else if (newXp >= 400) newRank = 'scout';
-  else if (newXp >= 100) newRank = 'pup';
-  await sbPatch('profiles', 'id=eq.'+JAY_ID, {total_xp: newXp, current_rank: newRank, updated_at: new Date().toISOString()});
-  profile.total_xp = newXp;
-  profile.current_rank = newRank;
-  // Refresh logs
-  const today2 = new Date().toLocaleDateString('en-CA');
-  todayLogs = await sbGet('daily_logs', 'select=*,protocols(name,icon,xp_reward)&profile_id=eq.'+JAY_ID+'&log_date=eq.'+today2);
-  renderProtocols();
-  // Update metrics display
-  const metricsEl = document.getElementById('metrics');
-  const cards = metricsEl.querySelectorAll('.metric-card');
-  if (cards[2]) cards[2].querySelector('.metric-value').textContent = todayLogs.length+'/'+allProtocols.length;
-  if (cards[3]) { cards[3].querySelector('.metric-value').textContent = newXp.toLocaleString(); cards[3].querySelector('.metric-label').textContent = newRank; }
+// ─── MERCURY ──────────────────────────────────────────────────────────────────
+function renderMercury(){
+  const count=G.metrics.hubspot_contacts?.count??'—';
+  const stale=G.metrics.hubspot_stale?.count??'—';
+  document.getElementById('mercury-body').innerHTML=
+    '<div class="metrics-strip" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px">'
+    +mc(count,'HS Contacts')+mc(stale,'Stale Leads')+mc('186','LIHTC Targets')
+    +'</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +'<a href="https://app.hubspot.com" target="_blank" class="howl-link">HubSpot</a>'
+    +'<a href="https://mercury-quote-generator.vercel.app" target="_blank" class="howl-link">Quote Generator</a>'
+    +'<a href="https://app.apollo.io" target="_blank" class="howl-link">Apollo</a>'
+    +'</div>';
 }
 
-async function undoProtocol(logId, protocolId, xp) {
-  await sbDelete('daily_logs', 'id=eq.'+logId);
-  const newXp = Math.max(0, (profile.total_xp||0) - xp);
-  await sbPatch('profiles', 'id=eq.'+JAY_ID, {total_xp: newXp, updated_at: new Date().toISOString()});
-  profile.total_xp = newXp;
-  const today = new Date().toLocaleDateString('en-CA');
-  todayLogs = await sbGet('daily_logs', 'select=*,protocols(name,icon,xp_reward)&profile_id=eq.'+JAY_ID+'&log_date=eq.'+today);
-  renderProtocols();
-  const metricsEl = document.getElementById('metrics');
-  const cards = metricsEl.querySelectorAll('.metric-card');
-  if (cards[2]) cards[2].querySelector('.metric-value').textContent = todayLogs.length+'/'+allProtocols.length;
-  if (cards[3]) cards[3].querySelector('.metric-value').textContent = newXp.toLocaleString();
+// ─── HOWL WIDGET (read-only) ──────────────────────────────────────────────────
+function renderHowlWidget(){
+  const xp=G.profile.total_xp||0;
+  const rank=G.profile.current_rank||'runt';
+  const rIdx=RANK_LADDER.indexOf(rank);
+  const thisXp=RANK_XP[rank]||0;
+  const nextRank=RANK_LADDER[rIdx+1];
+  const nextXp=nextRank?RANK_XP[nextRank]:thisXp;
+  const pct=nextXp>thisXp?Math.min(100,Math.round((xp-thisXp)/(nextXp-thisXp)*100)):100;
+  const loggedIds=new Set(G.logs.map(l=>l.protocol_id));
+  const badge=document.getElementById('howl-badge');
+  if(badge)badge.textContent=G.logs.length+'/'+G.protocols.length+' done';
+
+  let html='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+    +'<div class="rank-pill">🐺 '+esc(rank.toUpperCase())+'</div>'
+    +'<div style="flex:1">'
+    +'<div style="font-size:10px;color:#555;margin-bottom:4px">'+xp.toLocaleString()+' XP'+(nextRank?' → '+nextXp.toLocaleString()+' for '+nextRank:' · MAX')+'</div>'
+    +'<div class="xp-bar-wrap"><div class="xp-bar" style="width:'+pct+'%"></div></div>'
+    +'</div></div>';
+
+  html+='<div class="sub-label" style="margin-top:0">Today\'s Protocols</div>';
+  if(!G.protocols.length){
+    html+='<div class="empty-state">No protocols loaded.</div>';
+  } else {
+    html+=G.protocols.map(p=>{
+      const done=loggedIds.has(p.id);
+      return '<div class="proto-mini '+(done?'done':'')+'">'
+        +'<span class="proto-mini-icon">'+esc(p.icon||'•')+'</span>'
+        +'<span class="proto-mini-name">'+esc(p.name)+'</span>'
+        +'<span class="proto-mini-status">'+(done?'✓ done':'+'+p.xp_reward+' XP')+'</span>'
+        +'</div>';
+    }).join('');
+  }
+  html+='<a href="https://howl-pack.vercel.app" target="_blank" class="howl-link">Open HOWL App →</a>';
+  document.getElementById('howl-body').innerHTML=html;
+}
+
+// ─── FINANCIAL ────────────────────────────────────────────────────────────────
+function renderFinancial(){
+  const tasks=G.tasks.filter(t=>t.category==='financial');
+  const badge=document.getElementById('fin-badge');
+  if(badge)badge.textContent=tasks.length?tasks.length+' open':'';
+  if(!tasks.length){document.getElementById('financial-body').innerHTML='<div class="empty-state">No financial tasks.</div>';return;}
+  document.getElementById('financial-body').innerHTML=
+    '<p style="font-size:11px;color:#555;margin-bottom:8px">From your task list · category = financial</p>'
+    +tasks.map(t=>{
+      const pc=PRI_COLOR[t.priority]||'#7c8aff';
+      return '<div class="pri-row"><span class="pri-text">'+esc(t.title)+'</span>'+(t.due_date?'<span class="tag" style="border-color:#ffd166;color:#ffd166">'+esc(t.due_date)+'</span>':'')+'<span class="tag" style="border-color:'+pc+';color:'+pc+'">'+esc(t.priority)+'</span></div>';
+    }).join('');
+}
+
+// ─── FAMILY ───────────────────────────────────────────────────────────────────
+function renderFamily(){
+  const tasks=G.tasks.filter(t=>t.category==='family');
+  const badge=document.getElementById('fam-badge');
+  if(badge)badge.textContent=tasks.length?tasks.length+' open':'';
+  document.getElementById('family-body').innerHTML=
+    '<p style="font-size:11px;color:#555;margin-bottom:8px">Xander · Maddox · Ashley</p>'
+    +(tasks.length
+      ? tasks.map(t=>{
+          const pc=PRI_COLOR[t.priority]||'#7c8aff';
+          return '<div class="pri-row"><span class="pri-text">'+esc(t.title)+'</span>'+(t.due_date?'<span class="tag" style="border-color:#ffd166;color:#ffd166">'+esc(t.due_date)+'</span>':'')+'<span class="tag" style="border-color:'+pc+';color:'+pc+'">'+esc(t.priority)+'</span></div>';
+        }).join('')
+      : '<div class="empty-state">No family tasks.</div>');
+}
+
+// ─── HEALTH & WELLNESS ────────────────────────────────────────────────────────
+function renderHealthWellness(){
+  const loggedIds=new Set(G.logs.map(l=>l.protocol_id));
+  if(!G.protocols.length){document.getElementById('wellness-body').innerHTML='<div class="empty-state">No protocols loaded.</div>';return;}
+  const doneCount=G.protocols.filter(p=>loggedIds.has(p.id)).length;
+  document.getElementById('wellness-body').innerHTML=
+    '<p style="font-size:11px;color:#555;margin-bottom:10px">'+doneCount+'/'+G.protocols.length+' complete today · Log completions in <a href="https://howl-pack.vercel.app" target="_blank" style="color:#7c8aff">HOWL</a></p>'
+    +'<div class="health-grid">'
+    +G.protocols.map(p=>{
+      const done=loggedIds.has(p.id);
+      return '<div class="project-card" style="'+(done?'border-color:#1a3a1a;background:#0d1f0d':'')+'">'
+        +'<div class="project-name">'+esc(p.icon||'')+' '+esc(p.name)+'</div>'
+        +'<div class="project-status"><span class="dot '+(done?'dot-green':'dot-unknown')+'"></span>'+(done?'Done today':'Pending')+'</div>'
+        +'<div class="project-note">+'+esc(String(p.xp_reward||0))+' XP</div>'
+        +'</div>';
+    }).join('')
+    +'</div>';
 }
 </script>
 </body>
