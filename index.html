@@ -77,6 +77,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinning{display:inline-block;animation:spin .6s linear infinite}
 
+/* ─── SCOPE TABS (Life / System / All) ────────────────────── */
+.scope-tabs{display:flex;gap:0;margin-bottom:10px;background:#0d0d1a;border:1px solid #1a1a2e;border-radius:8px;overflow:hidden}
+.scope-tab{flex:1;border:none;background:none;color:#666;font-size:12px;padding:7px 0;cursor:pointer;transition:all .15s;font-weight:500;font-family:inherit}
+.scope-tab.active{background:#7c8aff;color:#0a0a1a;font-weight:600}
+.scope-tab:not(:last-child){border-right:1px solid #1a1a2e}
+
 /* ─── TASKS ───────────────────────────────────────────────── */
 .filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
 .filter-chip{font-size:11px;padding:5px 10px;border:1px solid #1a1a2e;border-radius:14px;background:#111122;color:#888;cursor:pointer;transition:all .15s}
@@ -91,6 +97,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .task-title{font-size:14px;color:#e0e0e0;line-height:1.3}
 .task-meta{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap;align-items:center}
 .tag{font-size:10px;padding:2px 6px;border:1px solid #333;border-radius:4px;color:#888}
+.scope-badge-life{border-color:#2ecc71!important;color:#2ecc71!important}
+.scope-badge-system{border-color:#9b59b6!important;color:#9b59b6!important}
+.scope-badge-mixed{border-color:#f39c12!important;color:#f39c12!important}
 .task-cal-btn{background:none;border:none;cursor:pointer;font-size:12px;padding:1px 3px;line-height:1;color:#555;flex-shrink:0}
 .task-cal-btn:hover{color:#7c8aff}
 .task-date-hidden{position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none;color-scheme:dark}
@@ -109,6 +118,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .add-date{background:#111122;border:1px solid #1a1a2e;border-radius:8px;padding:8px 6px;color:#888;font-size:11px;outline:none;color-scheme:dark;max-width:120px}
 .add-btn{background:#7c8aff;border:none;color:#fff;width:40px;border-radius:8px;font-size:20px;cursor:pointer;font-weight:bold;flex-shrink:0}
 .add-btn:active{background:#5a6ad4}
+
+/* ─── PIN BUTTON (on task rows) ───────────────────────────── */
+.pin-btn{background:none;border:none;font-size:14px;cursor:pointer;padding:2px 4px;color:#333;flex-shrink:0;transition:color .15s;line-height:1;align-self:flex-start;margin-top:6px}
+.pin-btn:hover{color:#7c8aff}
+.pin-btn.pinned{color:#7c8aff}
+
+/* ─── PRIORITIES ACCORDION ────────────────────────────────── */
+.pri2-row{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#111122;border:1px solid #1a1a2e;border-radius:8px;margin-bottom:5px}
+.pri2-text{font-size:13px;color:#e0e0e0;flex:1;min-width:0;line-height:1.3}
+.pri2-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.demote-btn{background:none;border:1px solid #333;border-radius:6px;color:#777;font-size:11px;padding:4px 8px;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
+.demote-btn:hover{border-color:#7c8aff;color:#7c8aff}
 
 /* ─── EMAIL ───────────────────────────────────────────────── */
 .email-row{background:#111122;border:1px solid #1a1a2e;border-radius:10px;padding:10px 14px;margin-bottom:6px}
@@ -160,7 +181,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .info-note{font-size:11px;color:#555;margin-top:2px;line-height:1.4}
 .info-link{font-size:11px;color:#7c8aff;text-decoration:none;margin-top:3px;display:inline-block}
 
-/* ─── PRIORITY ROWS ───────────────────────────────────────── */
+/* ─── PRIORITY ROWS (old style — used in Financial/Family) ── */
 .pri-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#111122;border:1px solid #1a1a2e;border-radius:8px;margin-bottom:5px}
 .pri-num{font-size:10px;color:#444;font-weight:600;min-width:14px}
 .pri-text{font-size:13px;color:#e0e0e0;flex:1;min-width:0}
@@ -238,7 +259,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
   <div id="accordion-list">
 
-  <!-- 1 · TODAY -->
+  <!-- 1 · TODAY (calendar only) -->
   <div class="accordion" id="today">
     <div class="acc-header" onclick="toggleAcc('today')">
       <div class="acc-left"><span class="acc-icon">📅</span><span class="acc-title">Today</span></div>
@@ -248,7 +269,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body"><div id="today-body"></div></div>
   </div>
 
-  <!-- 2 · TASKS -->
+  <!-- 2 · PRIORITIES (new) -->
+  <div class="accordion" id="priorities">
+    <div class="acc-header" onclick="toggleAcc('priorities')">
+      <div class="acc-left"><span class="acc-icon">📌</span><span class="acc-title">Priorities</span><span class="acc-badge" id="priorities-badge"></span></div>
+      <span class="acc-drag-handle" onclick="event.stopPropagation()">⠿</span>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body"><div id="priorities-body"></div></div>
+  </div>
+
+  <!-- 3 · TASKS -->
   <div class="accordion" id="tasks">
     <div class="acc-header" onclick="toggleAcc('tasks')">
       <div class="acc-left"><span class="acc-icon">✅</span><span class="acc-title">Tasks</span><span class="acc-badge" id="tasks-badge"></span></div>
@@ -256,6 +287,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <span class="acc-chevron">▼</span>
     </div>
     <div class="acc-body">
+      <div class="scope-tabs" id="scope-tabs">
+        <button class="scope-tab" data-scope="life" onclick="setScopeFilter('life')">Life</button>
+        <button class="scope-tab" data-scope="system" onclick="setScopeFilter('system')">System</button>
+        <button class="scope-tab" data-scope="all" onclick="setScopeFilter('all')">All</button>
+      </div>
       <div class="filter-row">
         <span class="filter-chip active" data-filter="all" onclick="setFilter('all')">All</span>
         <span class="filter-chip" data-filter="today" onclick="setFilter('today')">Today</span>
@@ -276,6 +312,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           <option value="tech">tech</option>
           <option value="financial">financial</option>
         </select>
+        <select id="new-scope" class="add-select">
+          <option value="life">life</option>
+          <option value="system">system</option>
+        </select>
         <select id="new-pri" class="add-select">
           <option value="medium">med</option>
           <option value="high">high</option>
@@ -288,7 +328,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     </div>
   </div>
 
-  <!-- 3 · EMAIL -->
+  <!-- 4 · EMAIL -->
   <div class="accordion" id="email">
     <div class="acc-header" onclick="toggleAcc('email')">
       <div class="acc-left"><span class="acc-icon">📧</span><span class="acc-title">Email</span><span class="acc-badge" id="email-badge"></span></div>
@@ -299,7 +339,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body"><div id="email-body"></div></div>
   </div>
 
-  <!-- 4 · SYSTEM HEALTH -->
+  <!-- 5 · SYSTEM HEALTH -->
   <div class="accordion" id="health_check">
     <div class="acc-header" onclick="toggleAcc('health_check')">
       <div class="acc-left"><span class="acc-icon">🖥️</span><span class="acc-title">System Health</span></div>
@@ -309,7 +349,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body" id="health-body"></div>
   </div>
 
-  <!-- 5 · MERCURY -->
+  <!-- 6 · MERCURY -->
   <div class="accordion" id="mercury">
     <div class="acc-header" onclick="toggleAcc('mercury')">
       <div class="acc-left"><span class="acc-icon">🌊</span><span class="acc-title">Mercury</span></div>
@@ -319,7 +359,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body"><div id="mercury-body"></div></div>
   </div>
 
-  <!-- 6 · HOWL WIDGET -->
+  <!-- 7 · HOWL WIDGET -->
   <div class="accordion" id="howl_widget">
     <div class="acc-header" onclick="toggleAcc('howl_widget')">
       <div class="acc-left"><span class="acc-icon">🐺</span><span class="acc-title">HOWL</span><span class="acc-badge" id="howl-badge"></span></div>
@@ -329,7 +369,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body"><div id="howl-body"></div></div>
   </div>
 
-  <!-- 7 · HARMONYCARES -->
+  <!-- 8 · HARMONYCARES -->
   <div class="accordion" id="harmonycares">
     <div class="acc-header" onclick="toggleAcc('harmonycares')">
       <div class="acc-left"><span class="acc-icon">🏥</span><span class="acc-title">HarmonyCares</span></div>
@@ -339,7 +379,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body" id="harmonycares-body"></div>
   </div>
 
-  <!-- 8 · CODEX MUSIC -->
+  <!-- 9 · CODEX MUSIC -->
   <div class="accordion" id="codex_music">
     <div class="acc-header" onclick="toggleAcc('codex_music')">
       <div class="acc-left"><span class="acc-icon">🎵</span><span class="acc-title">The Codex</span></div>
@@ -349,7 +389,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body" id="codex-body"></div>
   </div>
 
-  <!-- 9 · WASHU -->
+  <!-- 10 · WASHU -->
   <div class="accordion" id="washu">
     <div class="acc-header" onclick="toggleAcc('washu')">
       <div class="acc-left"><span class="acc-icon">🎓</span><span class="acc-title">WashU</span></div>
@@ -359,7 +399,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body" id="washu-body"></div>
   </div>
 
-  <!-- 10 · FINANCIAL -->
+  <!-- 11 · FINANCIAL -->
   <div class="accordion" id="financial">
     <div class="acc-header" onclick="toggleAcc('financial')">
       <div class="acc-left"><span class="acc-icon">💰</span><span class="acc-title">Financial</span><span class="acc-badge" id="fin-badge"></span></div>
@@ -369,7 +409,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body"><div id="financial-body"></div></div>
   </div>
 
-  <!-- 11 · FAMILY -->
+  <!-- 12 · FAMILY -->
   <div class="accordion" id="family">
     <div class="acc-header" onclick="toggleAcc('family')">
       <div class="acc-left"><span class="acc-icon">👨‍👦</span><span class="acc-title">Family</span><span class="acc-badge" id="fam-badge"></span></div>
@@ -379,7 +419,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body"><div id="family-body"></div></div>
   </div>
 
-  <!-- 12 · HEALTH & WELLNESS -->
+  <!-- 13 · HEALTH & WELLNESS -->
   <div class="accordion" id="health_wellness">
     <div class="acc-header" onclick="toggleAcc('health_wellness')">
       <div class="acc-left"><span class="acc-icon">💪</span><span class="acc-title">Health &amp; Wellness</span></div>
@@ -389,7 +429,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="acc-body"><div id="wellness-body"></div></div>
   </div>
 
-  <!-- 13 · ACCOUNTS & PASSWORDS -->
+  <!-- 14 · ACCOUNTS & PASSWORDS -->
   <div class="accordion" id="accounts_passwords">
     <div class="acc-header" onclick="toggleAcc('accounts_passwords')">
       <div class="acc-left"><span class="acc-icon">🔐</span><span class="acc-title">Accounts &amp; Passwords</span></div>
@@ -403,7 +443,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
   </div><!-- #accordion-list -->
 
-  <div class="hub-footer">Hub v8 &nbsp;·&nbsp; <span id="last-synced">Syncing…</span></div>
+  <div class="hub-footer">Hub v9 &nbsp;·&nbsp; <span id="last-synced">Syncing…</span></div>
 
 </div><!-- .container -->
 </div><!-- #hub -->
@@ -424,7 +464,7 @@ const RANK_LADDER = ['runt','pup','scout','hunter','warrior','alpha'];
 const RANK_XP    = {runt:0,pup:100,scout:400,hunter:1000,warrior:2500,alpha:5000};
 
 const PROJECTS = [
-  {name:'jay-hub',              dot:'green',   label:'Live',                url:'https://jay-hub-git-main-jay-klines-projects.vercel.app', note:'This app · Hub v8'},
+  {name:'jay-hub',              dot:'green',   label:'Live',                url:'https://jay-hub-git-main-jay-klines-projects.vercel.app', note:'This app · Hub v9'},
   {name:'howl-pack',            dot:'yellow',  label:'Deployed — spec wrong',url:'https://howl-pack.vercel.app',                          note:'Awaiting v4 rebuild'},
   {name:'mercury-quote-generator',dot:'green', label:'Live',                url:'https://mercury-quote-generator.vercel.app',              note:'Valet trash quote generator'},
   {name:'stt-trip-hub',         dot:'green',   label:'Live',                url:'https://stt-trip-hub.vercel.app',                         note:'STT trip hub'},
@@ -459,11 +499,12 @@ const QUICK_LINKS = [
   {icon:'💎',label:'Quotes',     url:'https://mercury-quote-generator.vercel.app'},
   {icon:'✈️',label:'STT Hub',    url:'https://stt-trip-hub.vercel.app'},
 ];
-const DEFAULT_OPEN = ['today','tasks'];
+const DEFAULT_OPEN = ['today','priorities','tasks'];
 
 // ─── GLOBAL STATE ─────────────────────────────────────────────────────────────
 let G = {tasks:[],protocols:[],logs:[],profile:{},emails:[],events:[],metrics:{}};
 let g_filter = 'all';
+let g_scope_filter = localStorage.getItem('tasks_scope_filter') || 'life';
 let taskSortable = null;
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -582,15 +623,20 @@ document.addEventListener('click',function(e){
 // ─── ACCORDION SYSTEM ─────────────────────────────────────────────────────────
 function applyAccOrder(){
   const stored=localStorage.getItem('acc_order');
-  if(!stored)return;
-  try{
-    const ids=JSON.parse(stored);
-    const list=document.getElementById('accordion-list');
+  const list=document.getElementById('accordion-list');
+  let ids=null;
+  if(stored){try{ids=JSON.parse(stored);}catch(e){}}
+  if(ids){
+    // Migrate: if priorities not in stored order, insert after today
+    if(!ids.includes('priorities')){
+      const todayIdx=ids.indexOf('today');
+      ids.splice(todayIdx>=0?todayIdx+1:1,0,'priorities');
+    }
     ids.forEach(id=>{
       const el=document.getElementById(id);
       if(el&&el.parentElement===list)list.appendChild(el);
     });
-  }catch(e){}
+  }
 }
 
 function saveAccOrder(){
@@ -696,6 +742,7 @@ async function loadData(){
 async function refreshTasks(){
   const tasks=await sbGet('tasks','select=*&status=in.(pending,in_progress)&order=sort_order.asc,created_at.desc&limit=100');
   G.tasks=tasks||[];
+  renderPriorities();
   _doRenderTasks(true);
   renderToday();
   renderFinancial();
@@ -722,6 +769,7 @@ async function refreshEmail(){
 function renderAll(){
   renderMetrics();
   renderToday();
+  renderPriorities();
   renderTasks();
   renderEmail();
   renderMercury();
@@ -738,20 +786,38 @@ function renderMetrics(){
     mc(G.logs.length+'/'+G.protocols.length,'Protocols');
 }
 
-// ─── TODAY ────────────────────────────────────────────────────────────────────
+// ─── TODAY (calendar only) ────────────────────────────────────────────────────
 function renderToday(){
   let html='<div class="sub-label">Schedule</div>';
   if(!G.events.length){html+='<div class="empty-state">No events synced.</div>';}
   else{html+=G.events.map(ev=>'<div class="event-row"><span class="event-time">'+fmtTime(ev.start_time)+'</span><span class="event-title">'+esc(ev.title)+'</span>'+(ev.meet_link?'<a class="event-link" href="'+esc(ev.meet_link)+'" target="_blank">Join</a>':'')+'</div>').join('');}
-  const topTasks=[...G.tasks].filter(t=>t.priority==='urgent'||t.priority==='high').sort((a,b)=>(PRI_ORDER[a.priority]??2)-(PRI_ORDER[b.priority]??2)).slice(0,5);
-  html+='<div class="sub-label" style="margin-top:14px">Top Priorities</div>';
-  if(!topTasks.length){html+='<div class="empty-state">No urgent or high-priority tasks.</div>';}
-  else{html+=topTasks.map((t,i)=>{const cc=CAT_COLOR[t.category]||'#7c8aff';return '<div class="pri-row"><span class="pri-num">'+(i+1)+'</span><span class="pri-text pri-'+t.priority+'">'+esc(t.title)+'</span><span class="pri-cat" style="border-color:'+cc+';color:'+cc+'">'+esc(t.category)+'</span></div>';}).join('');}
   document.getElementById('today-body').innerHTML=html;
+}
+
+// ─── PRIORITIES ───────────────────────────────────────────────────────────────
+function renderPriorities(){
+  const pins=G.tasks.filter(t=>t.is_priority);
+  const el=document.getElementById('priorities-body');
+  const badge=document.getElementById('priorities-badge');
+  if(badge)badge.textContent=pins.length?pins.length+' pinned':'';
+  if(!pins.length){
+    el.innerHTML='<div class="empty-state">📌 Pin tasks here to see them at the top. Swipe right on any task (or tap the pin) to promote it.</div>';
+    return;
+  }
+  el.innerHTML=pins.map(t=>{
+    const due=t.due_date?'<span class="tag" style="border-color:#ffd166;color:#ffd166">due '+esc(t.due_date)+'</span>':'';
+    return '<div class="pri2-row">'
+      +'<div class="pri2-text">'+esc(t.title)+'</div>'
+      +'<div class="pri2-right">'+due
+      +'<button class="demote-btn" onclick="demoteTask(\''+t.id+'\')">📌 Demote</button>'
+      +'</div></div>';
+  }).join('');
 }
 
 // ─── TASKS ────────────────────────────────────────────────────────────────────
 function renderTasks(){
+  // Sync scope tab active state
+  document.querySelectorAll('.scope-tab').forEach(t=>t.classList.toggle('active',t.dataset.scope===g_scope_filter));
   const a=document.activeElement;
   if(a&&(a.id==='new-task'||a.classList.contains('task-desc-edit')))return;
   _doRenderTasks(false);
@@ -763,6 +829,10 @@ function _doRenderTasks(force){
   const today=todayISO();
   const weekEnd=new Date(Date.now()+7*24*60*60*1000).toISOString().slice(0,10);
   let tasks=[...G.tasks];
+  // Apply scope filter
+  if(g_scope_filter==='life')tasks=tasks.filter(t=>t.scope==='life');
+  else if(g_scope_filter==='system')tasks=tasks.filter(t=>t.scope==='system');
+  // Apply time filter
   if(g_filter==='today')tasks=tasks.filter(t=>t.due_date===today);
   else if(g_filter==='week')tasks=tasks.filter(t=>t.due_date&&t.due_date>=today&&t.due_date<=weekEnd);
   tasks.sort((a,b)=>(PRI_ORDER[a.priority]??2)-(PRI_ORDER[b.priority]??2));
@@ -778,8 +848,14 @@ function _renderTaskList(tasks,filter){
     const pc=PRI_COLOR[t.priority]||'#7c8aff';
     const cc=CAT_COLOR[t.category]||'#7c8aff';
     const due=t.due_date?'<span class="tag" style="border-color:#ffd166;color:#ffd166">due '+esc(t.due_date)+'</span>':'';
+    const scopeLabel=t.scope==='life'?'Life':t.scope==='system'?'System':t.scope?esc(t.scope):'';
+    const scopeBadge=scopeLabel?'<span class="tag scope-badge scope-badge-'+esc(t.scope||'')+'">'+scopeLabel+'</span>':'';
     const checkLabel=filter==='deleted'?'↩':'o';
     const checkTitle=filter==='deleted'?'Restore':'Complete';
+    const pinned=!!t.is_priority;
+    const pinBtn=filter!=='deleted'
+      ?'<button class="pin-btn'+(pinned?' pinned':'')+'" onclick="event.stopPropagation();'+(pinned?'demoteTask':'pinTask')+'(\''+t.id+'\')" title="'+(pinned?'Unpin from Priorities':'Pin to Priorities')+'">'+(pinned?'📌':'📍')+'</button>'
+      :'';
     const calParts='<button class="task-cal-btn" onclick="event.stopPropagation();showTaskDatePicker(\''+t.id+'\')" title="Change due date">📅</button>'
       +'<input type="date" id="tdp-'+t.id+'" class="task-date-hidden" value="'+esc(t.due_date||'')+'" onchange="event.stopPropagation();updateDue(\''+t.id+'\',this.value)">';
     const expandContent=
@@ -799,9 +875,11 @@ function _renderTaskList(tasks,filter){
       +'<button class="task-check" onclick="event.stopPropagation();completeTask(\''+t.id+'\')" title="'+checkTitle+'">'+checkLabel+'</button>'
       +'<div class="task-body">'
       +'<div class="task-title">'+esc(t.title)+'</div>'
-      +'<div class="task-meta"><span class="tag" style="border-color:'+cc+';color:'+cc+'">'+esc(t.category)+'</span><span class="tag" style="border-color:'+pc+';color:'+pc+'">'+esc(t.priority)+'</span>'+due+calParts+'</div>'
+      +'<div class="task-meta"><span class="tag" style="border-color:'+cc+';color:'+cc+'">'+esc(t.category)+'</span><span class="tag" style="border-color:'+pc+';color:'+pc+'">'+esc(t.priority)+'</span>'+scopeBadge+due+calParts+'</div>'
       +'<div class="task-expand" id="exp-'+t.id+'" style="display:none">'+expandContent+'</div>'
-      +'</div></div>';
+      +'</div>'
+      +pinBtn
+      +'</div>';
   }).join('');
   initTaskSort();
   initTaskSwipe();
@@ -821,11 +899,43 @@ function setFilter(f){
   _doRenderTasks(true);
 }
 
+function setScopeFilter(scope){
+  g_scope_filter=scope;
+  localStorage.setItem('tasks_scope_filter',scope);
+  document.querySelectorAll('.scope-tab').forEach(t=>t.classList.toggle('active',t.dataset.scope===scope));
+  _doRenderTasks(true);
+}
+
+// ─── PIN / DEMOTE ─────────────────────────────────────────────────────────────
+async function pinTask(id){
+  await sbPatch('tasks','id=eq.'+id,{is_priority:true,updated_at:new Date().toISOString()});
+  const t=G.tasks.find(t=>t.id===id);
+  if(t)t.is_priority=true;
+  renderPriorities();
+  _doRenderTasks(true);
+  showToast('📌 Pinned to Priorities');
+}
+
+async function demoteTask(id){
+  await sbPatch('tasks','id=eq.'+id,{is_priority:false,updated_at:new Date().toISOString()});
+  const t=G.tasks.find(t=>t.id===id);
+  if(t)t.is_priority=false;
+  renderPriorities();
+  _doRenderTasks(true);
+  showToast('Removed from Priorities');
+}
+
 // ─── TASK CRUD ────────────────────────────────────────────────────────────────
 async function addTask(){
   const input=document.getElementById('new-task');
   const title=input.value.trim();if(!title)return;
-  const payload={title,category:document.getElementById('new-cat').value,priority:document.getElementById('new-pri').value,status:'pending'};
+  const payload={
+    title,
+    category:document.getElementById('new-cat').value,
+    priority:document.getElementById('new-pri').value,
+    scope:document.getElementById('new-scope').value,
+    status:'pending',
+  };
   const due=document.getElementById('new-due').value;if(due)payload.due_date=due;
   await sbPost('tasks',payload);
   input.value='';document.getElementById('new-due').value='';
@@ -882,7 +992,7 @@ async function saveTaskOrder(){
   await Promise.all(updates.map(u=>sbPatch('tasks','id=eq.'+u.id,{sort_order:u.sort_order,updated_at:new Date().toISOString()})));
 }
 
-// ─── TASK SWIPE (touch → date picker) ────────────────────────────────────────
+// ─── TASK SWIPE (right=pin, left=date picker) ─────────────────────────────────
 function initTaskSwipe(){
   document.querySelectorAll('#tasks-body .task-row').forEach(row=>{
     let sx=0,sy=0,active=false;
@@ -896,7 +1006,7 @@ function initTaskSwipe(){
       const dy=e.changedTouches[0].clientY-sy;
       if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){
         const id=row.dataset.taskId;
-        showTaskDatePicker(id);
+        if(dx>0){pinTask(id);}else{showTaskDatePicker(id);}
       }
       active=false;
     },{passive:true});
