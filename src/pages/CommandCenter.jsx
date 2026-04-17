@@ -5,22 +5,22 @@ const FOCUS_3 = [
   {
     id: 1,
     priority: 'URGENT',
-    project: 'Mercury',
-    title: 'Follow up with Vanguard Crossing',
-    subtitle: '312 units — contract terms pending 2 days',
-    action: { label: 'Open in Mercury', path: '/mercury' },
+    project: 'Life',
+    title: 'Blood Donation — ImpactLife St. Peters',
+    subtitle: 'Tomorrow 2:00 PM — don\'t forget!',
+    action: { label: 'View Life Admin', path: '/life' },
     color: 'border-red-500 bg-red-500/10',
-    icon: '🔥',
+    icon: '🩸',
   },
   {
     id: 2,
     priority: 'TODAY',
-    project: 'HOWL',
-    title: 'Complete ODS morning protocol',
-    subtitle: 'Day 5 streak — don\'t break the chain',
-    action: { label: 'Open HOWL', path: '/howl' },
-    color: 'border-yellow-500 bg-yellow-500/10',
-    icon: '🐺',
+    project: 'Mercury',
+    title: 'Site Walk — River Chase',
+    subtitle: 'Friday 10:00 AM — property walkthrough',
+    action: { label: 'Open Mercury', path: '/mercury' },
+    color: 'border-mercury-500 bg-mercury-500/10',
+    icon: '💧',
   },
   {
     id: 3,
@@ -42,11 +42,11 @@ const QUICK_STATS = [
 ]
 
 const ACTIVITY = [
-  { id: 1, project: 'Mercury', text: 'Created 178 companies in HubSpot', time: '2h ago', icon: '💧' },
-  { id: 2, project: 'PropEdge', text: 'Build complete — needs deploy', time: '3h ago', icon: '🏀' },
-  { id: 3, project: 'Mercury', text: 'Deal Studio integrated into Sales Hub', time: '3h ago', icon: '💧' },
-  { id: 4, project: 'Ventures', text: 'Property Intel sample report generated', time: '4h ago', icon: '🚀' },
-  { id: 5, project: 'HOWL', text: 'ODS Day 4 protocol completed', time: 'yesterday', icon: '🐺' },
+  { id: 1, project: 'Ventures', text: 'All 7 apps deployed to Vercel', time: 'just now', icon: '🚀' },
+  { id: 2, project: 'PropEdge', text: 'PropEdge signup bug fixed', time: '30m ago', icon: '🏀' },
+  { id: 3, project: 'Mercury', text: 'Mercury Sales Hub auth fix pushed', time: '30m ago', icon: '💧' },
+  { id: 4, project: 'Ventures', text: '3 Supabase migrations applied', time: '1h ago', icon: '⚡' },
+  { id: 5, project: 'Mercury', text: '178 companies created in HubSpot', time: '2h ago', icon: '💧' },
 ]
 
 function MomentumScore({ score = 72 }) {
